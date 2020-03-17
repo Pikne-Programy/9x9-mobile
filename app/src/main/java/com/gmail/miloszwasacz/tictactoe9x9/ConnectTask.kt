@@ -12,31 +12,41 @@ import java.net.Socket
 
 
 class ConnectTask(private val activity: BoardActivity, private var roomName: String = "public"): AsyncTask<Void, Void?, String>() {
-    private val socket = Socket()
+    private lateinit var socket: Socket
     private lateinit var output: OutputStream
     private lateinit var inputStream: InputStreamReader
+    private val serverIP = activity.serverIP
+    private val serverPORT = activity.serverPORT
 
     override fun onPreExecute() {
-        activity.showDialog(0)
+        activity.showDialog(activity.connectDialogId)
+        socket = Socket()
     }
 
     override fun doInBackground(vararg arg0: Void): String {
-        socket.connect(InetSocketAddress(activity.serverIP, activity.serverPORT))
+        socket.connect(InetSocketAddress(serverIP, serverPORT))
         output = socket.getOutputStream()
-        val packet = Gson().toJson(PacketJON(method = "JON", params = ParamsJON(roomName), time = (System.currentTimeMillis()/1000L).toInt()))
+        val packet = Gson().toJson(PacketJON(params = ParamsJON(roomName), time = (System.currentTimeMillis()/1000L).toInt()))
         output.write(packet.toByteArray(charset("UTF-8")))
 
         inputStream = InputStreamReader(socket.getInputStream())
         val input = BufferedReader(inputStream)
 
-        val result = input.readLine()
-        Log.i("packet", result)
+        val resultJSON = input.readLine()
+        Log.i("packet", resultJSON)
 
-        return result
+        return resultJSON
     }
 
     override fun onPostExecute(result: String) {
-        activity.removeDialog(0)
-        CommunicationTask(activity, result, socket, output, inputStream).execute()
+        activity.socket = socket
+        activity.output = output
+        activity.inputStream = inputStream
+        activity.removeDialog(activity.connectDialogId)
+        val resultPacket = activity.deserializePacketFromServer(result)
+        val task = CommunicationTask(activity, resultPacket)
+        activity.communicationTaskList.add(task)
+        task.execute()
+        //CommunicationTask(activity, resultPacket).execute()
     }
 }

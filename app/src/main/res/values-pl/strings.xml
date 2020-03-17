@@ -2,11 +2,23 @@
 <resources>
     <string name="app_name">Kółko i Krzyżyk 9x9</string>
     <string name="contentDescriptionBoardButton">Pole na planszy</string>
-    <string name="activePlayer">"Tura gracza "</string>
     <string name="winner">"Wygrywa "</string>
     <string name="hintRoomName">Nazwa pokoju</string>
     <string name="buttonJoinRoom">Dołącz</string>
     <string name="titleJoinRoom">Dołącz do pokoju</string>
     <string name="dialogJoinTitle">Dołączanie do pokoju</string>
     <string name="dialogJoinDescription">Wyszukiwanie przeciwnika</string>
+    <string name="dialogVersionTitle">Informacje o oprogramowaniu</string>
+    <string name="dialogVersionName">"nazwa: "</string>
+    <string name="dialogVersionAuthor">"autor: "</string>
+    <string name="dialogVersionVersion">"wersja: "</string>
+    <string name="dialogVersionFullName">"pełna nazwa: "</string>
+    <string name="dialogVersionProtocolVersion">"wersja protokołu: "</string>
+    <string name="dialogVersionNick">"nick: "</string>
+    <string name="dialogVersionFullNick">"pełny nick: "</string>
+    <string name="warningInvalidGame">Błędna rozgrywka</string>
+    <string name="activePlayerYou">Twoja tura</string>
+    <string name="activePlayerOpponent">Tura przeciwnika</string>
+    <string name="dialogDisconnectDescription">Opuszczanie gry</string>
+    <string name="dialogDisconnectTitle">Rozłączono</string>
 </resources>

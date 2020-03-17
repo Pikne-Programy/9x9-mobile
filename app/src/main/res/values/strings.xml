@@ -1,13 +1,25 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Tic Tac Toe 9x9</string>
     <string name="contentDescriptionBoardButton">Field on the board</string>
     <string name="playerX" translatable="false">X</string>
     <string name="playerO" translatable="false">O</string>
-    <string name="activePlayer">Active player: </string>
+    <string name="activePlayerYou">Your turn</string>
+    <string name="activePlayerOpponent">Opponent\'s turn</string>
     <string name="winner">Winner: </string>
+    <string name="warningInvalidGame">Invalid game</string>
     <string name="buttonJoinRoom">Join</string>
     <string name="hintRoomName">Room name</string>
     <string name="titleJoinRoom">Join Room</string>
     <string name="dialogJoinTitle">Joining Room</string>
     <string name="dialogJoinDescription">Waiting for an opponent</string>
+    <string name="dialogDisconnectTitle">Disconnected</string>
+    <string name="dialogDisconnectDescription">Leaving game</string>
+    <string name="dialogVersionTitle">Software information</string>
+    <string name="dialogVersionName">name: </string>
+    <string name="dialogVersionAuthor">author: </string>
+    <string name="dialogVersionVersion">version: </string>
+    <string name="dialogVersionFullName">full name: </string>
+    <string name="dialogVersionProtocolVersion">protocol version: </string>
+    <string name="dialogVersionNick">nick: </string>
+    <string name="dialogVersionFullNick">full nick: </string>
 </resources>

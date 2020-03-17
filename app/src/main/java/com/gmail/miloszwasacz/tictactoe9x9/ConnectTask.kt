@@ -1,46 +1,42 @@
+@file:Suppress("DEPRECATION")
 package com.gmail.miloszwasacz.tictactoe9x9
 
-import android.app.Activity
 import android.os.AsyncTask
 import android.util.Log
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.google.gson.Gson
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.OutputStream
 import java.net.InetSocketAddress
 import java.net.Socket
-import java.util.*
 
 
-class ConnectTask(var activity: Activity) : AsyncTask<Void, Void?, Void?>() {
+class ConnectTask(private val activity: BoardActivity, private var roomName: String = "public"): AsyncTask<Void, Void?, String>() {
     private val socket = Socket()
+    private lateinit var output: OutputStream
+    private lateinit var inputStream: InputStreamReader
 
-    override fun doInBackground(vararg arg0: Void): Void? {
-        socket.connect(InetSocketAddress("85.198.250.135", 4780))
-        val out: OutputStream = socket.getOutputStream()
-        val packet = jacksonObjectMapper().writeValueAsString(Packet(method = "JON", params = ParamsJON(), time = Calendar.getInstance().timeInMillis))
-        out.write(packet.toByteArray(charset("UTF-8")))
-
-        val input = BufferedReader(InputStreamReader(socket.getInputStream()))
-        val result = input.readLine()
-        /*
-        var result = ""
-        var value: Int
-        while(put.read().also { value = it } != -1) {
-
-            // converts int to character
-            val c = value.toChar()
-
-            // prints character
-            result += c
-        }*/
-        Log.i("result", result)
-
-        return null
+    override fun onPreExecute() {
+        activity.showDialog(0)
     }
 
-    override fun onPostExecute(result: Void?) {
-        //Toast.makeText(activity, "Połączono", Toast.LENGTH_SHORT).show()
-        //activity.startActivity(Intent(activity, BoardActivity::class.java))
+    override fun doInBackground(vararg arg0: Void): String {
+        socket.connect(InetSocketAddress(activity.serverIP, activity.serverPORT))
+        output = socket.getOutputStream()
+        val packet = Gson().toJson(PacketJON(method = "JON", params = ParamsJON(roomName), time = (System.currentTimeMillis()/1000L).toInt()))
+        output.write(packet.toByteArray(charset("UTF-8")))
+
+        inputStream = InputStreamReader(socket.getInputStream())
+        val input = BufferedReader(inputStream)
+
+        val result = input.readLine()
+        Log.i("packet", result)
+
+        return result
+    }
+
+    override fun onPostExecute(result: String) {
+        activity.removeDialog(0)
+        CommunicationTask(activity, result, socket, output, inputStream).execute()
     }
 }

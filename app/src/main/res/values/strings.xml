@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Tic Tac Toe 9x9</string>
-    <string name="serverIP" translatable="false">85.198.250.135</string>
-    <string name="contentDescriptionSmallButton">Field 1x1 on board</string>
-    <string name="contentDescriptionBigButton">Field 3x3 on board</string>
+    <string name="contentDescriptionBoardButton">Field on the board</string>
     <string name="playerX" translatable="false">X</string>
     <string name="playerO" translatable="false">O</string>
     <string name="activePlayer">Active player: </string>
@@ -10,4 +8,6 @@
     <string name="buttonJoinRoom">Join</string>
     <string name="hintRoomName">Room name</string>
     <string name="titleJoinRoom">Join Room</string>
+    <string name="dialogJoinTitle">Joining Room</string>
+    <string name="dialogJoinDescription">Waiting for an opponent</string>
 </resources>

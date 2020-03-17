@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Kółko i Krzyżyk 9x9</string>
-    <string name="contentDescriptionSmallButton">Pole 1x1 na planszy</string>
-    <string name="contentDescriptionBigButton">Pole 3x3 na planszy</string>
+    <string name="contentDescriptionBoardButton">Pole na planszy</string>
     <string name="activePlayer">"Tura gracza "</string>
     <string name="winner">"Wygrywa "</string>
     <string name="hintRoomName">Nazwa pokoju</string>
     <string name="buttonJoinRoom">Dołącz</string>
     <string name="titleJoinRoom">Dołącz do pokoju</string>
+    <string name="dialogJoinTitle">Dołączanie do pokoju</string>
+    <string name="dialogJoinDescription">Wyszukiwanie przeciwnika</string>
 </resources>

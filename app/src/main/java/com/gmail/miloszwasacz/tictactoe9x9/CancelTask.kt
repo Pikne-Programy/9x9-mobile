@@ -23,10 +23,11 @@ class CancelTask(private val activity: BoardActivity): AsyncTask<Void, Void?, Vo
     }
 
     override fun onPostExecute(result: Void?) {
-        activity.socket.shutdownInput()
-        activity.socket.shutdownOutput()
-        activity.socket.close()
-
+        if(!activity.socket.isClosed) {
+            activity.socket.shutdownInput()
+            activity.socket.shutdownOutput()
+            activity.socket.close()
+        }
         activity.removeDialog(activity.disconnectDialogId)
         activity.finish()
     }

@@ -1,8 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Tic Tac Toe 9x9</string>
     <string name="contentDescriptionBoardButton">Field on the board</string>
-    <string name="playerX" translatable="false">X</string>
-    <string name="playerO" translatable="false">O</string>
+    <string name="playerYou">You: </string>
     <string name="activePlayerYou">Your turn</string>
     <string name="activePlayerOpponent">Opponent\'s turn</string>
     <string name="winner">Winner: </string>

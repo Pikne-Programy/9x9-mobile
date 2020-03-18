@@ -44,7 +44,7 @@ class BoardActivity: AppCompatActivity() {
         supportActionBar!!.title = roomName
 
         //Łączenie z serwerem
-        ConnectTask(this, roomName).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        ConnectTask(this@BoardActivity, roomName).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
 
         //Generowanie małych planszy
         for(y in 0..8) {
@@ -194,18 +194,22 @@ class BoardActivity: AppCompatActivity() {
         }
 
         //Ustawianie aktywnego gracza/zwycięzcy
+        textViewYou.text = resources.getString(R.string.playerYou) + state.params.you
         if(state.params.whoWon == "-") {
-            textView.text = when(state.params.move) {
+            textViewActivePlayer.text = when(state.params.move) {
                 state.params.you -> resources.getString(R.string.activePlayerYou)
                 else -> resources.getString(R.string.activePlayerOpponent)
             }
         }
         else
-            textView.text = resources.getString(R.string.winner) + state.params.whoWon
+            textViewActivePlayer.text = resources.getString(R.string.winner) + state.params.whoWon
+
+
 
         gameState = GameState(state.params.whoWon, state.params.you, state.params.move, state.params.marked)
     }
 
+    //Obsługa strzałeczki w tył
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when(item!!.itemId) {
             android.R.id.home -> {
@@ -215,11 +219,20 @@ class BoardActivity: AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    //Wyjście z Activity
     override fun onBackPressed() {
         CancelTask(this@BoardActivity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
-    //Dialog "Proszę czekać"
+    //Rozłączenie się na onPause
+    override fun onPause() {
+        super.onPause()
+        Toast.makeText(this@BoardActivity, R.string.dialogDisconnectTitle, Toast.LENGTH_SHORT).show()
+        CancelTask(this@BoardActivity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+    }
+
+    //Tworzenie Dialog'ów
     override fun onCreateDialog(dialogId: Int): Dialog? {
         val dialog = ProgressDialog(this)
         when(dialogId) {

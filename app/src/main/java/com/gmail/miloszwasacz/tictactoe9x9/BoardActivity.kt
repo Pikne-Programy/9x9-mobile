@@ -38,7 +38,7 @@ class BoardActivity: AppCompatActivity() {
         viewModel = model
         currentDialog = viewModel.removeDialog
         model.dialogId.observe(this@BoardActivity, Observer { event ->
-            event?.getContentIfNotHandledOrReturnNull()?.let {
+            event?.getContent()?.let {
                 if(it == model.removeDialog) {
                     if(currentDialog != model.removeDialog) {
                         removeDialog(currentDialog)
@@ -51,9 +51,11 @@ class BoardActivity: AppCompatActivity() {
                 }
             }
         })
-        model.connect(roomName)
+        if(savedInstanceState == null) {
+            model.connect(roomName)
+        }
         model.currentGameState.observe(this@BoardActivity, Observer { event ->
-            event?.getContentIfNotHandledOrReturnNull()?.let {
+            event?.getContent()?.let {
                 updateGameState(it)
             }
         })
@@ -132,91 +134,21 @@ class BoardActivity: AppCompatActivity() {
     }
 
     //Aktualizacja stanu gry
-    /*fun updateGameState(state: PacketSTT) {
-        val boardState = ArrayList<ArrayList<Char>>()
-        val bigBoardState = ArrayList<ArrayList<Char>>()
-
-        //Konwersja Stringów na ArrayListy
-        for(y in 0..8) {
-            boardState.add(ArrayList())
-            for(x in 0..8)
-                boardState[y].add(state.params.board[y*9 + x])
-        }
-        for(y in 0..2) {
-            bigBoardState.add(ArrayList())
-            for(x in 0..2)
-                bigBoardState[y].add(state.params.bigBoard[y*3 + x])
-        }
-
-        //Ustawianie ikon na małych planszach
-        for(y in 0..8) {
-            for(x in 0..8) {
-                if(boardState[y][x] == 'X')
-                    buttons[y][x].setImageDrawable(resources.getDrawable(R.drawable.ic_x_icon_24dp))
-                else if(boardState[y][x] == 'O')
-                    buttons[y][x].setImageDrawable(resources.getDrawable(R.drawable.ic_o_icon_24dp))
+    private fun updateGameState(state: BoardModel) {
+        //Resetowanie planszy
+        for(row in bigButtons) {
+            for(button in row) {
+                button.setImageDrawable(null)
+                button.visibility = View.GONE
             }
         }
-
-        //Ustawianie ikon na dużej planszy
-        for(yB in 0..2) {
-            for(xB in 0..2) {
-                if(bigBoardState[yB][xB] != '-') {
-                    for(y in (3*yB)..(3*yB + 2)) {
-                        for(x in (3*xB)..(3*xB + 2))
-                            buttons[y][x].visibility = View.GONE
-                    }
-                    bigButtons[yB][xB].visibility = View.VISIBLE
-
-                    val drawableXId = R.drawable.ic_x_icon_24dp
-                    val drawableOId = R.drawable.ic_o_icon_24dp
-                    bigButtons[yB][xB].setImageDrawable(resources.getDrawable(when(bigBoardState[yB][xB] == 'X') {
-                                                                                  true -> drawableXId
-                                                                                  false -> drawableOId
-                                                                              }))
-                }
-            }
-        }
-
-        //Ustawianie aktywnych pól
-        val markedY = state.params.marked/3
-        val markedX = state.params.marked%3
         for(row in buttons) {
             for(button in row) {
-                button.setBackgroundColor(resources.getColor(R.color.colorBackground))
-            }
-        }
-        if(state.params.whoWon == "-" && state.params.move == state.params.you) {
-            if(state.params.marked == -1) {
-                for(row in buttons) {
-                    for(button in row) {
-                        button.setBackgroundColor(resources.getColor(R.color.colorAccent))
-                    }
-                }
-            }
-            else {
-                for(y in (3*markedY)..(3*markedY + 2)) {
-                    for(x in (3*markedX)..(3*markedX + 2)) buttons[y][x].setBackgroundColor(resources.getColor(R.color.colorAccent))
-                }
+                button.setImageDrawable(null)
+                button.visibility = View.VISIBLE
             }
         }
 
-        //Ustawianie aktywnego gracza/zwycięzcy
-        textViewYou.text = resources.getString(R.string.playerYou) + state.params.you
-        if(state.params.whoWon == "-") {
-            textViewActivePlayer.text = when(state.params.move) {
-                state.params.you -> resources.getString(R.string.activePlayerYou)
-                else -> resources.getString(R.string.activePlayerOpponent)
-            }
-        }
-        else
-            textViewActivePlayer.text = resources.getString(R.string.winner) + state.params.whoWon
-
-
-
-        gameState = GameState(state.params.whoWon, state.params.you, state.params.move, state.params.marked)
-    }*/
-    private fun updateGameState(state: BoardModel) {
         //Ustawianie ikon na małych planszach
         for(y in 0..8) {
             for(x in 0..8) {
@@ -286,30 +218,6 @@ class BoardActivity: AppCompatActivity() {
 
         gameState = state
     }
-
-    /*
-    //Obsługa strzałeczki w tył
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when(item!!.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    //Wyjście z Activity
-    override fun onBackPressed() {
-        CloseSocketTask(this@BoardActivity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-    }
-
-    //Rozłączenie się na onPause
-    override fun onPause() {
-        super.onPause()
-        Toast.makeText(this@BoardActivity, R.string.dialogDisconnectTitle, Toast.LENGTH_SHORT).show()
-        CloseSocketTask(this@BoardActivity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-    }*/
 
     //Tworzenie Dialog'ów
     override fun onCreateDialog(dialogId: Int): Dialog? {

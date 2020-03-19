@@ -11,8 +11,6 @@
     <string name="titleJoinRoom">Join Room</string>
     <string name="dialogJoinTitle">Joining Room</string>
     <string name="dialogJoinDescription">Waiting for an opponent</string>
-    <string name="dialogDisconnectTitle">Disconnected</string>
-    <string name="dialogDisconnectDescription">Leaving game</string>
     <string name="dialogVersionTitle">Software information</string>
     <string name="dialogVersionName">name: </string>
     <string name="dialogVersionAuthor">author: </string>

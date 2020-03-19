@@ -3,18 +3,9 @@ package com.gmail.miloszwasacz.tictactoe9x9
 import android.os.AsyncTask
 import android.util.Log
 import com.google.gson.Gson
-import java.net.InetSocketAddress
 
-class SendTask(private val activity: BoardActivity, private var packet: Packet/*, private var socket: Socket, private var output: OutputStream*/): AsyncTask<Void, Void?, Void?>() {
-    private val socket = activity.socket
-    private var output = activity.output
-
-    override fun onPreExecute() {
-        if(!socket.isConnected) {
-            socket.connect(InetSocketAddress(activity.serverIP, activity.serverPORT))
-            output = socket.getOutputStream()
-        }
-    }
+class SendTask(viewModel: CommunicationViewModel, private var packet: Packet): AsyncTask<Void, Void?, Void?>() {
+    private var output = viewModel.output
 
     override fun doInBackground(vararg arg0: Void): Void? {
         val packetJSON = Gson().toJson(packet)

@@ -19,7 +19,5 @@
     <string name="warningInvalidGame">Błędna rozgrywka</string>
     <string name="activePlayerYou">Twoja tura</string>
     <string name="activePlayerOpponent">Tura przeciwnika</string>
-    <string name="dialogDisconnectDescription">Opuszczanie gry</string>
-    <string name="dialogDisconnectTitle">Rozłączono</string>
     <string name="playerYou">"Grasz "</string>
 </resources>

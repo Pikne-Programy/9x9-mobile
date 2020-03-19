@@ -1,4 +1,3 @@
-@file:Suppress("DEPRECATION")
 package com.gmail.miloszwasacz.tictactoe9x9
 
 import android.os.AsyncTask
@@ -11,15 +10,15 @@ import java.net.InetSocketAddress
 import java.net.Socket
 
 
-class ConnectTask(private val activity: BoardActivity, private var roomName: String = "public"): AsyncTask<Void, Void?, String>() {
+class ConnectTask(private var viewModel: CommunicationViewModel, private var roomName: String = "public"): AsyncTask<Void, Void?, String>() {
     private lateinit var socket: Socket
     private lateinit var output: OutputStream
     private lateinit var inputStream: InputStreamReader
-    private val serverIP = activity.serverIP
-    private val serverPORT = activity.serverPORT
+    private val serverIP = viewModel.serverIP
+    private val serverPORT = viewModel.serverPORT
 
     override fun onPreExecute() {
-        activity.showDialog(activity.connectDialogId)
+        viewModel.dialogId.value = Event(viewModel.connectDialogId)
         socket = Socket()
     }
 
@@ -39,14 +38,11 @@ class ConnectTask(private val activity: BoardActivity, private var roomName: Str
     }
 
     override fun onPostExecute(result: String) {
-        activity.socket = socket
-        activity.output = output
-        activity.inputStream = inputStream
-        activity.removeDialog(activity.connectDialogId)
-        val resultPacket = activity.deserializePacketFromServer(result)
-        val task = CommunicationTask(activity, resultPacket)
-        activity.communicationTaskList.add(task)
-        task.execute()
-        //CommunicationTask(activity, resultPacket).execute()
+        viewModel.socket = socket
+        viewModel.output = output
+        viewModel.inputStream = inputStream
+        viewModel.dialogId.value = Event(viewModel.removeDialog)
+        val resultPacket = viewModel.deserializePacketFromServer(result)
+        viewModel.communicate(resultPacket)
     }
 }

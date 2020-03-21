@@ -1,22 +1,55 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <string name="app_name">Tic Tac Toe 9x9</string>
-    <string name="contentDescriptionBoardButton">Field on the board</string>
-    <string name="playerYou">You: </string>
-    <string name="activePlayerYou">Your turn</string>
-    <string name="activePlayerOpponent">Opponent\'s turn</string>
-    <string name="winner">Winner: </string>
-    <string name="warningInvalidGame">Invalid game</string>
-    <string name="buttonJoinRoom">Join</string>
-    <string name="hintRoomName">Room name</string>
-    <string name="titleJoinRoom">Join Room</string>
-    <string name="dialogJoinTitle">Joining Room</string>
-    <string name="dialogJoinDescription">Waiting for an opponent</string>
-    <string name="dialogVersionTitle">Software information</string>
-    <string name="dialogVersionName">name: </string>
-    <string name="dialogVersionAuthor">author: </string>
-    <string name="dialogVersionVersion">version: </string>
-    <string name="dialogVersionFullName">full name: </string>
-    <string name="dialogVersionProtocolVersion">protocol version: </string>
-    <string name="dialogVersionNick">nick: </string>
-    <string name="dialogVersionFullNick">full nick: </string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Buttons -->
+    <string name="button_join_room">Join</string>
+    <string name="content_description_board_button">Field on the board</string>
+
+    <!-- Labels -->
+    <string name="label_join_room">Join Room</string>
+    <string name="hint_room_name">Room name</string>
+    <string name="label_active_player_you">Your turn</string>
+    <string name="label_active_player_opponent">Opponent\'s turn</string>
+    <string name="label_winner">Winner: </string>
+    <string name="label_player_you">You: </string>
+
+    <!-- Dialogs and warnings -->
+    <string name="dialog_join_title">Joining Room</string>
+    <string name="dialog_join_description">Waiting for an opponent</string>
+    <string name="dialog_version_title">Software information</string>
+    <string name="dialog_version_label_name">name: </string>
+    <string name="dialog_version_label_author">author: </string>
+    <string name="dialog_version_label_version">version: </string>
+    <string name="dialog_version_label_full_name">full name: </string>
+    <string name="dialog_version_label_protocol_version">protocol version: </string>
+    <string name="dialog_version_label_nick">nick: </string>
+    <string name="dialog_version_label_full_nick">full nick: </string>
+    <string name="warning_invalid_game">Invalid game</string>
+    <string name="warning_invalid_ip_port">Invalid server IP or port</string>
+
+
+    <!-- Preference Titles -->
+    <string name="connection_header">Connection</string>
+    <string name="appearance_header">Appearance</string>
+
+    <!-- Preference keys -->
+    <string name="key_ip" translatable="false">key_ip</string>
+    <string name="key_port" translatable="false">key_port</string>
+    <string name="key_theme" translatable="false">key_theme</string>
+
+    <!-- Connection Preferences -->
+    <string name="ip_title">Server address</string>
+    <string name="port_title">Server port</string>
+    <string name="default_ip" translatable="false">85.198.250.135</string>
+    <string name="default_port" translatable="false">4780</string>
+
+    <!-- Appearance Preferences -->
+    <string name="theme_title">App theme</string>
+    <string name="theme_name_light">Light</string>
+    <string name="theme_name_dark">Dark</string>
+    <string name="theme_light" translatable="false">AppTheme</string>
+    <string name="theme_dark" translatable="false">AppThemeDark</string>
+
 </resources>

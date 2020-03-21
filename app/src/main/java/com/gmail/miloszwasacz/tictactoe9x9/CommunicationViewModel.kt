@@ -1,27 +1,38 @@
 package com.gmail.miloszwasacz.tictactoe9x9
 
+import android.app.Application
 import android.os.AsyncTask
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.preference.PreferenceManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
 import java.io.OutputStream
 import java.net.Socket
 
-open class CommunicationViewModel: ViewModel() {
+open class CommunicationViewModel(application: Application): AndroidViewModel(application) {
+    //Dialogi
     var dialogId = MutableLiveData<Event<Int>>()
     val removeDialog = -1
     val connectDialogId = 0
     val versionDialogId = 1
-    val serverIP = "85.198.250.135"
-    val serverPORT = 4780
-    lateinit var socket: Socket
+
+    //IP i port serwera
+    val serverIP = (PreferenceManager.getDefaultSharedPreferences(application).getString(application.getString(R.string.key_ip), application.getString(R.string.default_ip)) ?: application.getString(R.string.default_ip)).toString()
+    val serverPORT = (PreferenceManager.getDefaultSharedPreferences(application).getString(application.getString(R.string.key_port), application.getString(R.string.default_port)) ?: application.getString(R.string.default_port)).toInt()
+
+    //Socket
+    var socket: Socket? = null
     lateinit var output: OutputStream
     lateinit var inputStream: InputStreamReader
+
+    //Listy AsyncTask'ów
     val communicationTaskList = ArrayList<CommunicationTask>()
     val sendTaskList = ArrayList<SendTask>()
+
     var currentGameState = MutableLiveData<Event<BoardModel>>()
+    var wrongSocket = MutableLiveData<Event<Boolean>>()
     var versionPacket: PacketVER? = null
 
     //Łączenie z serwerem

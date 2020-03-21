@@ -8,41 +8,41 @@
         android:id="@+id/textViewName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/dialogVersionName" />
+        android:text="@string/dialog_version_label_name" />
 
     <TextView
         android:id="@+id/textViewAuthor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/dialogVersionAuthor" />
+        android:text="@string/dialog_version_label_author" />
 
     <TextView
         android:id="@+id/textViewVersion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/dialogVersionVersion" />
+        android:text="@string/dialog_version_label_version" />
 
     <TextView
         android:id="@+id/textViewFullName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/dialogVersionFullName" />
+        android:text="@string/dialog_version_label_full_name" />
 
     <TextView
         android:id="@+id/textViewProtocolVersion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/dialogVersionProtocolVersion" />
+        android:text="@string/dialog_version_label_protocol_version" />
 
     <TextView
         android:id="@+id/textViewNick"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/dialogVersionNick" />
+        android:text="@string/dialog_version_label_nick" />
 
     <TextView
         android:id="@+id/textViewFullNick"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/dialogVersionFullNick" />
+        android:text="@string/dialog_version_label_full_nick" />
 </LinearLayout>

@@ -5,11 +5,13 @@
         <EditTextPreference
             app:key="@string/key_ip"
             app:title="@string/ip_title"
+            app:defaultValue="@string/default_ip"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
             app:key="@string/key_port"
             app:title="@string/port_title"
+            app:defaultValue="@string/default_port"
             app:useSimpleSummaryProvider="true" />
 
 

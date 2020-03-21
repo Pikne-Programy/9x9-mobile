@@ -28,6 +28,7 @@ class BoardActivity: AppCompatActivity() {
     private var currentDialog = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //Ustawianie motywu
         setTheme(when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_theme), "AppTheme")) {
                      getString(R.string.theme_dark) -> R.style.AppThemeDark
                      else -> R.style.AppTheme
@@ -272,6 +273,9 @@ class BoardActivity: AppCompatActivity() {
                 dialog.setTitle(R.string.dialog_join_title)
                 dialog.setMessage(resources.getString(R.string.dialog_join_description))
                 dialog.setCancelable(true)
+                dialog.setOnCancelListener {
+                    finish()
+                }
             }
             //Wersja oprogramowania
             else -> {

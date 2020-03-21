@@ -10,6 +10,7 @@ import androidx.preference.PreferenceManager
 class SettingsActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //Ustawianie motywu
         setTheme(when(PreferenceManager.getDefaultSharedPreferences(this@SettingsActivity).getString(getString(R.string.key_theme), "AppTheme")) {
                      getString(R.string.theme_dark) -> R.style.AppThemeDark
                      else -> R.style.AppTheme
@@ -20,6 +21,7 @@ class SettingsActivity: AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(R.id.settings, SettingsFragment()).commit()
     }
 
+    //Tworzenie ustawień
     class SettingsFragment: PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)

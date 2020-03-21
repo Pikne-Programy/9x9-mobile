@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //Ustawianie motywu
         setTheme(when(PreferenceManager.getDefaultSharedPreferences(this@MainActivity).getString(getString(R.string.key_theme), "AppTheme")) {
                      getString(R.string.theme_dark) -> R.style.AppThemeDark
                      else -> R.style.AppTheme
@@ -19,21 +20,24 @@ class MainActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //Dołączanie do pokoju
         buttonJoin.setOnClickListener {
             val intent = Intent(this@MainActivity, BoardActivity::class.java)
-            intent.putExtra("EXTRA_ROOM_NAME", when(editTextRoomName.text.toString().trim()) {
+            intent.putExtra("EXTRA_ROOM_NAME", when(val text = editTextRoomName.text.toString().trim()) {
                 "" -> "public"
-                else -> editTextRoomName.text.toString().trim()
+                else -> text
             })
             startActivity(intent)
         }
     }
 
+    //Pokazywanie ikonek
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
+    //Obsługa ikonek
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id: Int = item.itemId
         if(id == R.id.action_settings) {

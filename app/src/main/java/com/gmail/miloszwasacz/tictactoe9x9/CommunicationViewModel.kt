@@ -19,28 +19,21 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
     val versionDialogId = 1
 
     //IP i port serwera
-    val serverIP = (PreferenceManager.getDefaultSharedPreferences(application).getString(application.getString(R.string.key_ip), application.getString(R.string.default_ip)) ?: application.getString(R.string.default_ip)).toString()
-    val serverPORT = (PreferenceManager.getDefaultSharedPreferences(application).getString(application.getString(R.string.key_port), application.getString(R.string.default_port)) ?: application.getString(R.string.default_port)).toInt()
+    private val serverIP = (PreferenceManager.getDefaultSharedPreferences(application).getString(application.getString(R.string.key_ip), application.getString(R.string.default_ip)) ?: application.getString(R.string.default_ip)).toString()
+    private val serverPORT = (PreferenceManager.getDefaultSharedPreferences(application).getString(application.getString(R.string.key_port), application.getString(R.string.default_port)) ?: application.getString(R.string.default_port)).toInt()
 
     //Socket
-    val client = OkHttpClient()
-    var socket: WebSocket? = null
-    //lateinit var output: OutputStream
-    //lateinit var inputStream: InputStreamReader
+    private val client = OkHttpClient()
+    private var socket: WebSocket? = null
     val NORMAL_CLOSURE_STATUS = 1000
 
-    //Listy AsyncTask'ów
-    //val communicationTaskList = ArrayList<CommunicationTask>()
-    //val sendTaskList = ArrayList<SendTask>()
     val interpretationTaskList = ArrayList<InterpretationTask>()
-
     var currentGameState = MutableLiveData<Event<BoardModel>>()
     var wrongSocket = MutableLiveData<Event<Boolean>>()
     var versionPacket: PacketVER? = null
 
     //Łączenie z serwerem
     fun connect(roomName: String) {
-        //ConnectTask(this@CommunicationViewModel, roomName).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
         dialogId.value = Event(connectDialogId)
         wrongSocket.value = Event(false)
         val request = Request.Builder().url("ws://$serverIP:$serverPORT").build()
@@ -48,35 +41,20 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
         socket = client.newWebSocket(request, listener)
     }
 
-    /*
-    //Odbieranie pakietu
-    fun communicate(packet: Packet?) {
-        val task = CommunicationTask(this@CommunicationViewModel, packet)
-        communicationTaskList.add(task)
-        task.execute()
-    }*/
-
     //Wysyłanie ruchu gracza
     fun sendMove(x: Int, y: Int) {
-        /*val task = SendTask(this@CommunicationViewModel, PacketSET(params = ParamsSET(x, y), time = (System.currentTimeMillis()/1000L).toInt()))
-        sendTaskList.add(task)
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)*/
         val packet = PacketSET(params = ParamsSET(x, y), time = (System.currentTimeMillis()/1000L).toInt())
         socket?.send(Gson().toJson(packet))
     }
 
     //Wysyłanie odpowiedzi na Ping
     fun sendPOG() {
-        /*val task = SendTask(this@CommunicationViewModel, PacketGetPngPog(method = "POG", params = ParamsGetPngPog(), time = (System.currentTimeMillis()/1000L).toInt()))
-        sendTaskList.add(task)
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)*/
         val packet = PacketGetPngPog(method = "POG", params = ParamsGetPngPog(), time = (System.currentTimeMillis()/1000L).toInt())
         socket?.send(Gson().toJson(packet))
     }
 
     //Zamykanie Socketa
     override fun onCleared() {
-        //CloseSocketTask(this@CommunicationViewModel).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
         for(task in interpretationTaskList) {
             if(task.status == AsyncTask.Status.RUNNING || task.status == AsyncTask.Status.PENDING)
                 task.cancel(false)
@@ -87,8 +65,6 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
 
     //Deserializacja pakietu z serwera w obiekt
     fun deserializePacketFromServer(input: String): Packet {
-        //val packetTypeJON = object: TypeToken<PacketJON>() {}.type
-        //val packetTypeSET = object: TypeToken<PacketSET>() {}.type
         val packetTypeSTT = object: TypeToken<PacketSTT>() {}.type
         val packetTypeVER = object: TypeToken<PacketVER>() {}.type
         val packetTypeBadErrDbgUin = object: TypeToken<PacketBadErrDbgUin>() {}.type
@@ -97,8 +73,6 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
         val tempPacket = Gson().fromJson<PacketGetPngPog>(input, packetTypeGetPngPog)
 
         return when(tempPacket.method) {
-            //"JON" -> Gson().fromJson<PacketJON>(input, packetTypeJON)
-            //"SET" -> Gson().fromJson<PacketSET>(input, packetTypeSET)
             "STT" -> Gson().fromJson<PacketSTT>(input, packetTypeSTT)
             "VER" -> Gson().fromJson<PacketVER>(input, packetTypeVER)
             "BAD" -> Gson().fromJson<PacketBadErrDbgUin>(input, packetTypeBadErrDbgUin)

@@ -1,5 +1,5 @@
 <resources>
-    <!-- Reply Preference -->
+    <!-- Theme Preference -->
     <string-array name="theme_entries">
         <item>@string/theme_name_light</item>
         <item>@string/theme_name_dark</item>

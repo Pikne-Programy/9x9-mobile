@@ -17,7 +17,6 @@ class EchoWebSocketListener(private val viewModel: CommunicationViewModel, priva
         val task = InterpretationTask(viewModel, text)
         viewModel.interpretationTaskList.add(task)
         task.execute()
-        //Log.i("Receiving",  text)
     }
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {

@@ -40,8 +40,8 @@ class MainActivity: AppCompatActivity() {
     //Obsługa ikonek
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id: Int = item.itemId
+        //Ustawienia
         if(id == R.id.action_settings) {
-            // launch settings activity
             startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
             return true
         }

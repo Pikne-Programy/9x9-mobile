@@ -19,10 +19,10 @@ class CloseSocketTask(private val viewModel: CommunicationViewModel): AsyncTask<
     }
 
     override fun onPostExecute(result: Void?) {
-        if(!viewModel.socket.isClosed) {
-            viewModel.socket.shutdownInput()
-            viewModel.socket.shutdownOutput()
-            viewModel.socket.close()
+        if(viewModel.socket != null && !viewModel.socket!!.isClosed) {
+            viewModel.socket!!.shutdownInput()
+            viewModel.socket!!.shutdownOutput()
+            viewModel.socket!!.close()
         }
     }
 }

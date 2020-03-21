@@ -2,13 +2,20 @@ package com.gmail.miloszwasacz.tictactoe9x9
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(when(PreferenceManager.getDefaultSharedPreferences(this@MainActivity).getString(getString(R.string.key_theme), "AppTheme")) {
+                     getString(R.string.theme_dark) -> R.style.AppThemeDark
+                     else -> R.style.AppTheme
+                 })
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -20,6 +27,21 @@ class MainActivity: AppCompatActivity() {
             })
             startActivity(intent)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id: Int = item.itemId
+        if(id == R.id.action_settings) {
+            // launch settings activity
+            startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
 

@@ -33,6 +33,7 @@ class CommunicationTask(private val viewModel: CommunicationViewModel, private v
             when(resultPacket) {
                 //Odbieranie planszy
                 is PacketSTT -> {
+                    viewModel.dialogId.value = Event(viewModel.removeDialog)
                     viewModel.currentGameState.value = Event(viewModel.createBoardState(resultPacket))
                     viewModel.communicate(null)
                 }

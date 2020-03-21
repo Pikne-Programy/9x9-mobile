@@ -20,7 +20,7 @@
 
         <ListPreference
             app:key="@string/key_theme"
-            app:defaultValue="reply"
+            app:defaultValue="@string/theme_light"
             app:entries="@array/theme_entries"
             app:entryValues="@array/theme_values"
             app:title="@string/theme_title" />

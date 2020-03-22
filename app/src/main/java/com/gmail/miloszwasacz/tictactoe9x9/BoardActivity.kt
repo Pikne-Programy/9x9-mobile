@@ -3,6 +3,7 @@ package com.gmail.miloszwasacz.tictactoe9x9
 
 import android.app.Dialog
 import android.app.ProgressDialog
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
@@ -229,25 +230,42 @@ class BoardActivity: AppCompatActivity() {
                 if(theme.resolveAttribute(android.R.attr.windowBackground, typedValue, true)) {
                     button.setBackgroundColor(typedValue.data)
                 }
-                else {
-                    button.setBackgroundColor(resources.getColor(R.color.colorBackground))
-                }
             }
         }
-        if(state.whoWon == "-" && state.move == state.you) {
+        if(state.whoWon == "-") {
             if(state.marked == -1) {
                 for(row in buttons) {
                     for(button in row) {
-                        button.setBackgroundColor(resources.getColor(R.color.colorAccent))
+                        button.setBackgroundColor(resources.getColor(when(state.move) {
+                                                      state.you -> R.color.colorAccent
+                                                      else -> R.color.colorAccentLight
+                                                  }))
                     }
                 }
             }
             else {
                 for(y in (3*markedY)..(3*markedY + 2)) {
                     for(x in (3*markedX)..(3*markedX + 2)) {
-                        buttons[y][x].setBackgroundColor(resources.getColor(R.color.colorAccent))
+                        buttons[y][x].setBackgroundColor(resources.getColor(when(state.move) {
+                                                                                state.you -> R.color.colorAccent
+                                                                                else -> R.color.colorAccentLight
+                                                                            }))
                     }
                 }
+            }
+        }
+        for(row in buttons) {
+            for(button in row) {
+                button.setColorFilter(ContextCompat.getColor(this@BoardActivity, when((button.background as ColorDrawable).color) {
+                    getColor(R.color.colorAccent) -> android.R.color.black
+                    getColor(R.color.colorAccentLight) -> android.R.color.black
+                    else -> {
+                        when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_theme), "AppTheme")) {
+                            getString(R.string.theme_dark) -> android.R.color.white
+                            else -> android.R.color.black
+                        }
+                    }
+                }), android.graphics.PorterDuff.Mode.SRC_IN)
             }
         }
 
@@ -277,7 +295,7 @@ class BoardActivity: AppCompatActivity() {
                 dialog.setMessage(resources.getString(R.string.dialog_join_description))
                 dialog.setCancelable(true)
                 dialog.setOnCancelListener {
-                    //finish()
+                    finish()
                 }
             }
             //Wersja oprogramowania

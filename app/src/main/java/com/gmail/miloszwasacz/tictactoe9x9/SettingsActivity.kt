@@ -16,21 +16,24 @@ class SettingsActivity: AppCompatActivity() {
             else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.settings_activity)
-        supportFragmentManager.beginTransaction().replace(R.id.settings, SettingsFragment()).commit()
+
+        if(savedInstanceState == null) {
+            val fragment = SettingsFragment()
+            supportFragmentManager.beginTransaction().replace(R.id.settings, fragment).commit()
+        }
     }
+}
 
-    class SettingsFragment: PreferenceFragmentCompat() {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            setPreferencesFromResource(R.xml.root_preferences, rootKey)
-
-            val themePreference = findPreference<ListPreference>(getString(R.string.key_theme))
-            themePreference?.summary = themePreference?.entries?.get(themePreference.findIndexOfValue(themePreference.value))
-            themePreference?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener {_, _ ->
-                activity?.recreate()
-                return@OnPreferenceChangeListener true
-            }
+class SettingsFragment: PreferenceFragmentCompat() {
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.root_preferences, rootKey)
+        
+        val themePreference = findPreference<ListPreference>(getString(R.string.key_theme))
+        themePreference?.summary = themePreference?.entries?.get(themePreference.findIndexOfValue(themePreference.value))
+        themePreference?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener {_, _ ->
+            activity?.recreate()
+            return@OnPreferenceChangeListener true
         }
     }
 }

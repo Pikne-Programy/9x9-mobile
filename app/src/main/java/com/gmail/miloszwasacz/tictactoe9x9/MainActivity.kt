@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -12,10 +13,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(when(PreferenceManager.getDefaultSharedPreferences(this@MainActivity).getString(getString(R.string.key_theme), "AppTheme")) {
-                     getString(R.string.theme_dark) -> R.style.AppThemeDark
-                     else -> R.style.AppTheme
-                 })
+        when(PreferenceManager.getDefaultSharedPreferences(this@MainActivity).getString(getString(R.string.key_theme), "AppTheme")) {
+            getString(R.string.theme_dark) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 

@@ -13,6 +13,8 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.gridlayout.widget.GridLayout
 import androidx.lifecycle.Observer
@@ -28,10 +30,10 @@ class BoardActivity: AppCompatActivity() {
     private var currentDialog = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_theme), "AppTheme")) {
-                     getString(R.string.theme_dark) -> R.style.AppThemeDark
-                     else -> R.style.AppTheme
-                 })
+        when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_theme), "AppTheme")) {
+            getString(R.string.theme_dark) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_board)
 
@@ -141,7 +143,7 @@ class BoardActivity: AppCompatActivity() {
                     else -> android.R.color.black
                 }), android.graphics.PorterDuff.Mode.SRC_IN)
 
-                button.visibility = View.GONE
+                button.visibility = View.INVISIBLE
                 arrayList += button
             }
             bigButtons += arrayList
@@ -151,19 +153,21 @@ class BoardActivity: AppCompatActivity() {
         for(row in buttons) {
             for(button in row) {
                 button.setOnClickListener {
-                    try {
-                        if(gameState.whoWon == "-" && gameState.you == gameState.move) {
-                            val markedY = gameState.marked/3
-                            val markedX = gameState.marked%3
-                            val markedYRange = (markedY*3)..(markedY*3 + 2)
-                            val markedXRange = (markedX*3)..(markedX*3 + 2)
-                            if(gameState.marked == -1 || (markedYRange.contains(buttons.indexOf(row)) && markedXRange.contains(row.indexOf(button)))) {
-                                model.sendMove(row.indexOf(button), buttons.indexOf(row))
+                    if(button.drawable == null) {
+                        try {
+                            if(gameState.whoWon == "-" && gameState.you == gameState.move) {
+                                val markedY = gameState.marked/3
+                                val markedX = gameState.marked%3
+                                val markedYRange = (markedY*3)..(markedY*3 + 2)
+                                val markedXRange = (markedX*3)..(markedX*3 + 2)
+                                if(gameState.marked == -1 || (markedYRange.contains(buttons.indexOf(row)) && markedXRange.contains(row.indexOf(button)))) {
+                                    model.sendMove(row.indexOf(button), buttons.indexOf(row))
+                                }
                             }
                         }
-                    }
-                    catch(e: UninitializedPropertyAccessException) {
-                        Toast.makeText(this@BoardActivity, R.string.warning_invalid_game, Toast.LENGTH_SHORT).show()
+                        catch(e: UninitializedPropertyAccessException) {
+                            Toast.makeText(this@BoardActivity, R.string.warning_invalid_game, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
@@ -176,7 +180,7 @@ class BoardActivity: AppCompatActivity() {
         for(row in bigButtons) {
             for(button in row) {
                 button.setImageDrawable(null)
-                button.visibility = View.GONE
+                button.visibility = View.INVISIBLE
             }
         }
         for(row in buttons) {
@@ -202,7 +206,7 @@ class BoardActivity: AppCompatActivity() {
                 if(state.bigBoard[yB][xB] != '-') {
                     for(y in (3*yB)..(3*yB + 2)) {
                         for(x in (3*xB)..(3*xB + 2))
-                            buttons[y][x].visibility = View.GONE
+                            buttons[y][x].visibility = View.INVISIBLE
                     }
                     bigButtons[yB][xB].visibility = View.VISIBLE
 
@@ -268,14 +272,17 @@ class BoardActivity: AppCompatActivity() {
         when(dialogId) {
             //Łączenie z serwerem
             viewModel.connectDialogId -> {
-                dialog = ProgressDialog(this@BoardActivity)
+                dialog = ProgressDialog/*(this@BoardActivity)*/(ContextThemeWrapper(this@BoardActivity, theme))
                 dialog.setTitle(R.string.dialog_join_title)
                 dialog.setMessage(resources.getString(R.string.dialog_join_description))
                 dialog.setCancelable(true)
+                dialog.setOnCancelListener {
+                    //finish()
+                }
             }
             //Wersja oprogramowania
             else -> {
-                val builder = AlertDialog.Builder(this@BoardActivity)
+                val builder = AlertDialog.Builder/*(this@BoardActivity)*/(ContextThemeWrapper(this@BoardActivity, theme))
                 val linearLayout = layoutInflater.inflate(R.layout.dialog_version, null, false) as LinearLayout
                 val textViewName = linearLayout.findViewById<TextView>(R.id.textViewName)
                 val textViewAuthor = linearLayout.findViewById<TextView>(R.id.textViewAuthor)

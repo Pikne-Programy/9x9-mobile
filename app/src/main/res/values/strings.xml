@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <string name="app_name">Tic Tac Toe 9x9</string>
     <string name="title_activity_settings">Settings</string>

@@ -29,4 +29,13 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/developer_header">
+
+        <SwitchPreference
+            app:key="@string/key_debug_info"
+            app:defaultValue="false"
+            app:title="@string/debug_info_title" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

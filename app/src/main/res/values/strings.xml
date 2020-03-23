@@ -26,6 +26,8 @@
     <string name="dialog_version_label_protocol_version">protocol version: </string>
     <string name="dialog_version_label_nick">nick: </string>
     <string name="dialog_version_label_full_nick">full nick: </string>
+    <string name="dialog_debug_title_error">Error</string>
+    <string name="dialog_debug_title_debug">Debug</string>
     <string name="warning_invalid_game">Invalid game</string>
     <string name="warning_invalid_ip_port">Invalid server IP or port</string>
 
@@ -33,11 +35,13 @@
     <!-- Preference Titles -->
     <string name="connection_header">Connection</string>
     <string name="appearance_header">Appearance</string>
+    <string name="developer_header">Developer options</string>
 
     <!-- Preference keys -->
     <string name="key_ip" translatable="false">key_ip</string>
     <string name="key_port" translatable="false">key_port</string>
     <string name="key_theme" translatable="false">key_theme</string>
+    <string name="key_debug_info" translatable="false">key_dev</string>
 
     <!-- Connection Preferences -->
     <string name="ip_title">Server address</string>
@@ -51,5 +55,8 @@
     <string name="theme_name_dark">Dark</string>
     <string name="theme_light" translatable="false">AppTheme</string>
     <string name="theme_dark" translatable="false">AppThemeDark</string>
+
+    <!-- Developer Preferences -->
+    <string name="debug_info_title">Show errors and debug data</string>
 
 </resources>

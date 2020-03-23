@@ -1,6 +1,7 @@
 @file:Suppress("DEPRECATION", "SetTextI18n", "InflateParams")
 package com.gmail.miloszwasacz.tictactoe9x9
 
+import android.app.Application
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.graphics.drawable.ColorDrawable
@@ -286,11 +287,11 @@ class BoardActivity: AppCompatActivity() {
 
     //Tworzenie Dialog'ów
     override fun onCreateDialog(dialogId: Int): Dialog? {
-        val dialog: Dialog
+        val dialog: Dialog?
         when(dialogId) {
             //Łączenie z serwerem
             viewModel.connectDialogId -> {
-                dialog = ProgressDialog/*(this@BoardActivity)*/(ContextThemeWrapper(this@BoardActivity, theme))
+                dialog = ProgressDialog(ContextThemeWrapper(this@BoardActivity, theme))
                 dialog.setTitle(R.string.dialog_join_title)
                 dialog.setMessage(resources.getString(R.string.dialog_join_description))
                 dialog.setCancelable(true)
@@ -299,8 +300,8 @@ class BoardActivity: AppCompatActivity() {
                 }
             }
             //Wersja oprogramowania
-            else -> {
-                val builder = AlertDialog.Builder/*(this@BoardActivity)*/(ContextThemeWrapper(this@BoardActivity, theme))
+            viewModel.versionDialogId -> {
+                val builder = AlertDialog.Builder(ContextThemeWrapper(this@BoardActivity, theme))
                 val linearLayout = layoutInflater.inflate(R.layout.dialog_version, null, false) as LinearLayout
                 val textViewName = linearLayout.findViewById<TextView>(R.id.textViewName)
                 val textViewAuthor = linearLayout.findViewById<TextView>(R.id.textViewAuthor)
@@ -328,6 +329,23 @@ class BoardActivity: AppCompatActivity() {
                     }
                     .setView(linearLayout)
                 dialog = builder.create()
+            }
+            //Info o błędach i debugu
+            else -> {
+                if(PreferenceManager.getDefaultSharedPreferences(viewModel.getApplication()).getBoolean(viewModel.getApplication<Application>().getString(R.string.key_debug_info), false)) {
+                    val builder = AlertDialog.Builder(ContextThemeWrapper(this@BoardActivity, theme))
+                    builder.setTitle(when(viewModel.debugPacket?.method) {
+                                         "ERR" -> R.string.dialog_debug_title_error
+                                         else -> R.string.dialog_debug_title_debug
+                                     }).setMessage(viewModel.debugPacket?.params!!.msg).setPositiveButton(resources.getString(android.R.string.ok)) {_, _ ->
+                            currentDialog = viewModel.removeDialog
+                        }
+                    dialog = builder.create()
+                }
+                else {
+                    dialog = null
+                }
+                viewModel.debugPacket = null
             }
         }
         return dialog

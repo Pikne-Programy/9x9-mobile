@@ -52,7 +52,9 @@ class CommunicationTask(private val viewModel: CommunicationViewModel, private v
                 }
                 //Zapisywanie błędów itp. w Log'u
                 else -> {
-                    Log.i("packetMSG", (resultPacket as PacketBadErrDbgUin).params.msg)
+                    viewModel.dialogId.value = Event(viewModel.debugDialog)
+                    viewModel.debugPacket = resultPacket as PacketBadErrDbgUin
+                    Log.i("packetMSG", resultPacket.params.msg)
 
                     viewModel.communicate(null)
                 }

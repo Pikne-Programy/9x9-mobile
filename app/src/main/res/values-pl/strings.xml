@@ -29,4 +29,8 @@
     <string name="port_title">Port serwera</string>
     <string name="theme_title">Motyw aplikacji</string>
     <string name="warning_invalid_ip_port">Błędny adres IP lub port</string>
+    <string name="developer_header">Opcje programisty</string>
+    <string name="debug_info_title">Wyświetlanie informacji o błędach i danych do debugu</string>
+    <string name="dialog_debug_title_error">Błąd</string>
+    <string name="dialog_debug_title_debug">Debug</string>
 </resources>

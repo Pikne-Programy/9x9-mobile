@@ -38,7 +38,6 @@ class MainActivity: AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id: Int = item.itemId
         if(id == R.id.action_settings) {
-            // launch settings activity
             startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
             return true
         }

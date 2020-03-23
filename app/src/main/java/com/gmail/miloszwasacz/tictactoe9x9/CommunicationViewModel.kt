@@ -1,6 +1,7 @@
 package com.gmail.miloszwasacz.tictactoe9x9
 
 import android.app.Application
+import android.app.Dialog
 import android.os.AsyncTask
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -14,10 +15,11 @@ import java.net.Socket
 open class CommunicationViewModel(application: Application): AndroidViewModel(application) {
     //Dialogi
     var dialogId = MutableLiveData<Event<Int>>()
+    var dialogs = ArrayList<Dialog>()
     val removeDialog = -1
     val connectDialogId = 0
     val versionDialogId = 1
-    val debugDialog = 2
+    var debugMsg = MutableLiveData<Event<PacketBadErrDbgUin>>()
 
     //IP i port serwera
     val serverIP = (PreferenceManager.getDefaultSharedPreferences(application).getString(application.getString(R.string.key_ip), application.getString(R.string.default_ip)) ?: application.getString(R.string.default_ip)).toString()
@@ -35,7 +37,6 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
     var currentGameState = MutableLiveData<Event<BoardModel>>()
     var wrongSocket = MutableLiveData<Event<Boolean>>()
     var versionPacket: PacketVER? = null
-    var debugPacket: PacketBadErrDbgUin? = null
 
     //Łączenie z serwerem
     fun connect(roomName: String) {
@@ -71,8 +72,6 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
 
     //Deserializacja pakietu z serwera w obiekt
     fun deserializePacketFromServer(input: String): Packet {
-        //val packetTypeJON = object: TypeToken<PacketJON>() {}.type
-        //val packetTypeSET = object: TypeToken<PacketSET>() {}.type
         val packetTypeSTT = object: TypeToken<PacketSTT>() {}.type
         val packetTypeVER = object: TypeToken<PacketVER>() {}.type
         val packetTypeBadErrDbgUin = object: TypeToken<PacketBadErrDbgUin>() {}.type
@@ -81,8 +80,6 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
         val tempPacket = Gson().fromJson<PacketGetPngPog>(input, packetTypeGetPngPog)
 
         return when(tempPacket.method) {
-            //"JON" -> Gson().fromJson<PacketJON>(input, packetTypeJON)
-            //"SET" -> Gson().fromJson<PacketSET>(input, packetTypeSET)
             "STT" -> Gson().fromJson<PacketSTT>(input, packetTypeSTT)
             "VER" -> Gson().fromJson<PacketVER>(input, packetTypeVER)
             "BAD" -> Gson().fromJson<PacketBadErrDbgUin>(input, packetTypeBadErrDbgUin)

@@ -29,7 +29,6 @@ class BoardActivity: AppCompatActivity() {
     private val bigButtons = ArrayList<ArrayList<ImageView>>()
     private lateinit var gameState: BoardModel
     private lateinit var viewModel: CommunicationViewModel
-    private var currentDialog = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_theme), "AppTheme")) {
@@ -44,32 +43,57 @@ class BoardActivity: AppCompatActivity() {
         val roomName = intent.getStringExtra("EXTRA_ROOM_NAME")
         supportActionBar!!.title = roomName
 
-        //Łączenie z serwerem
+        //Ustawianie ViewModelu
         val model: CommunicationViewModel by viewModels()
         viewModel = model
-        currentDialog = viewModel.removeDialog
+        //Obsługa dialogów
         model.dialogId.observe(this@BoardActivity, Observer { event ->
             event?.getContent()?.let {
-                if(it == model.removeDialog) {
-                    if(currentDialog != model.removeDialog) {
-                        removeDialog(currentDialog)
-                        currentDialog = model.removeDialog
+                for(dialog in model.dialogs) {
+                    if(dialog.isShowing) {
+                        dialog.dismiss()
                     }
+                    model.dialogs.remove(dialog)
                 }
-                else {
-                    currentDialog = it
-                    showDialog(currentDialog)
+                if(it != model.removeDialog) {
+                    showDialog(it)
                 }
             }
         })
+        //Obsługa debugu
+        model.debugMsg.observe(this@BoardActivity, Observer { event ->
+            event?.getContent()?.let {
+                for(dialog in model.dialogs) {
+                    if(dialog.isShowing) {
+                        dialog.dismiss()
+                    }
+                    model.dialogs.remove(dialog)
+                }
+                if(it.params.msg != "" && PreferenceManager.getDefaultSharedPreferences(viewModel.getApplication()).getBoolean(viewModel.getApplication<Application>().getString(R.string.key_debug_info), false)) {
+                    val builder = AlertDialog.Builder(ContextThemeWrapper(this@BoardActivity, theme))
+                    builder
+                        .setTitle(R.string.dialog_debug_title_debug)
+                        .setMessage(it.params.msg)
+                        .setPositiveButton(resources.getString(android.R.string.ok)) {_, _ ->
+                            viewModel.dialogId.value = Event(viewModel.removeDialog)
+                            viewModel.debugMsg.value = Event(PacketBadErrDbgUin(method = "DBG", params = ParamsBadErrDbgUin(""), time = (System.currentTimeMillis()/1000L).toInt()))
+                        }
+                    val dialog = builder.create()
+                    dialog.show()
+                }
+            }
+        })
+        //Łączenie z serwerem
         if(savedInstanceState == null) {
             model.connect(roomName)
         }
+        //Obsługa aktualnego stanu gry
         model.currentGameState.observe(this@BoardActivity, Observer { event ->
             event?.getContent()?.let {
                 updateGameState(it)
             }
         })
+        //Obsługa socketa w razie błędu
         model.wrongSocket.observe(this@BoardActivity, Observer { event ->
             event?.getContent()?.let {
                 if(it) {
@@ -88,11 +112,11 @@ class BoardActivity: AppCompatActivity() {
                 val params = GridLayout.LayoutParams(GridLayout.spec(y, 1f), GridLayout.spec(x, 1f))
                 params.width = 0
                 params.height = 0
-                if(x%3 == 0 /*x == 0 || x == 3 || x == 6*/)
+                if(x%3 == 0)
                     params.leftMargin = resources.getDimensionPixelSize(R.dimen.margin3dp)
                 else
                     params.leftMargin = resources.getDimensionPixelSize(R.dimen.margin1dp)
-                if(y%3 == 0 /*y == 0 || y == 3 || y == 6*/)
+                if(y%3 == 0)
                     params.topMargin = resources.getDimensionPixelSize(R.dimen.margin3dp)
                 else
                     params.topMargin = resources.getDimensionPixelSize(R.dimen.margin1dp)
@@ -287,7 +311,7 @@ class BoardActivity: AppCompatActivity() {
 
     //Tworzenie Dialog'ów
     override fun onCreateDialog(dialogId: Int): Dialog? {
-        val dialog: Dialog?
+        val dialog: Dialog
         when(dialogId) {
             //Łączenie z serwerem
             viewModel.connectDialogId -> {
@@ -324,30 +348,24 @@ class BoardActivity: AppCompatActivity() {
                 builder
                     .setTitle(resources.getString(R.string.dialog_version_title))
                     .setPositiveButton(resources.getString(android.R.string.ok)) {_, _ ->
-                        currentDialog = viewModel.removeDialog
+                        viewModel.dialogId.value = Event(viewModel.removeDialog)
                         viewModel.versionPacket = null
                     }
                     .setView(linearLayout)
                 dialog = builder.create()
             }
-            //Info o błędach i debugu
+            //Dialog awaryjny
             else -> {
-                if(PreferenceManager.getDefaultSharedPreferences(viewModel.getApplication()).getBoolean(viewModel.getApplication<Application>().getString(R.string.key_debug_info), false)) {
-                    val builder = AlertDialog.Builder(ContextThemeWrapper(this@BoardActivity, theme))
-                    builder.setTitle(when(viewModel.debugPacket?.method) {
-                                         "ERR" -> R.string.dialog_debug_title_error
-                                         else -> R.string.dialog_debug_title_debug
-                                     }).setMessage(viewModel.debugPacket?.params!!.msg).setPositiveButton(resources.getString(android.R.string.ok)) {_, _ ->
-                            currentDialog = viewModel.removeDialog
-                        }
-                    dialog = builder.create()
-                }
-                else {
-                    dialog = null
-                }
-                viewModel.debugPacket = null
+                val builder = AlertDialog.Builder(ContextThemeWrapper(this@BoardActivity, theme))
+                builder
+                    .setTitle(R.string.dialog_debug_title_error)
+                    .setPositiveButton(resources.getString(android.R.string.ok)) {_, _ ->
+                        viewModel.dialogId.value = Event(viewModel.removeDialog)
+                    }
+                dialog = builder.create()
             }
         }
+        viewModel.dialogs.add(dialog)
         return dialog
     }
 }

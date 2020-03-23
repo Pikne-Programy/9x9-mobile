@@ -1,6 +1,7 @@
 package com.gmail.miloszwasacz.tictactoe9x9
 
 import android.app.Application
+import android.app.Dialog
 import android.os.AsyncTask
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -14,10 +15,11 @@ import okhttp3.WebSocket
 open class CommunicationViewModel(application: Application): AndroidViewModel(application) {
     //Dialogi
     var dialogId = MutableLiveData<Event<Int>>()
+    var dialogs = ArrayList<Dialog>()
     val removeDialog = -1
     val connectDialogId = 0
     val versionDialogId = 1
-    val debugDialog = 2
+    var debugMsg = MutableLiveData<Event<PacketBadErrDbgUin>>()
 
     //IP i port serwera
     private val serverIP = (PreferenceManager.getDefaultSharedPreferences(application).getString(application.getString(R.string.key_ip), application.getString(R.string.default_ip)) ?: application.getString(R.string.default_ip)).toString()
@@ -32,7 +34,6 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
     var currentGameState = MutableLiveData<Event<BoardModel>>()
     var wrongSocket = MutableLiveData<Event<Boolean>>()
     var versionPacket: PacketVER? = null
-    var debugPacket: PacketBadErrDbgUin? = null
 
     //Łączenie z serwerem
     fun connect(roomName: String) {

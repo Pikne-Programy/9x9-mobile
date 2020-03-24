@@ -1,5 +1,6 @@
 package com.gmail.miloszwasacz.tictactoe9x9
 
+import android.app.Application
 import android.os.AsyncTask
 import android.util.Log
 
@@ -17,8 +18,14 @@ class InterpretationTask(private val viewModel: CommunicationViewModel, private 
             when(resultPacket) {
                 //Odbieranie planszy
                 is PacketSTT -> {
-                    viewModel.dialogId.value = Event(viewModel.removeDialog)
-                    viewModel.currentGameState.value = Event(viewModel.createBoardState(resultPacket))
+                    if(viewModel.createBoardState(resultPacket) == null) {
+                        viewModel.debugMsg.value = Event(PacketBadErrDbgUin(method = "ERR", params = ParamsBadErrDbgUin(viewModel.getApplication<Application>().getString(R.string.warning_invalid_stt)), time = resultPacket.time))
+                    }
+                    else {
+                        viewModel.connectDialog.value = Event(false)
+                        viewModel.currentGameState.value = Event(viewModel.createBoardState(resultPacket))
+                    }
+                    Log.i("packetSTT", resultPacket.toString())
                 }
                 //Wysłanie odpowiedzi na pakiet "PNG"
                 is PacketGetPngPog -> {
@@ -28,12 +35,12 @@ class InterpretationTask(private val viewModel: CommunicationViewModel, private 
                 }
                 //Wyświetlanie info o oprogramowaniu
                 is PacketVER -> {
-                    viewModel.versionPacket = resultPacket
-                    viewModel.dialogId.value = Event(viewModel.versionDialogId)
+                    viewModel.versionPacket.value = Event(resultPacket)
+                    Log.i("packetVER", resultPacket.toString())
                 }
                 //Zapisywanie błędów itp. w Log'u
-                else -> {
-                    viewModel.debugMsg.value = Event(resultPacket as PacketBadErrDbgUin)
+                is PacketBadErrDbgUin -> {
+                    viewModel.debugMsg.value = Event(resultPacket)
                     Log.i("packetMSG", resultPacket.params.msg)
                 }
             }

@@ -25,6 +25,6 @@ class EchoWebSocketListener(private val viewModel: CommunicationViewModel, priva
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-        Log.i("Error", t.message)
+        Log.i("Error", t.message ?: "error")
     }
 }

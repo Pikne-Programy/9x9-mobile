@@ -60,9 +60,7 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
             if(task.status == AsyncTask.Status.RUNNING || task.status == AsyncTask.Status.PENDING)
                 task.cancel(false)
         }
-        if(socket != null) {
-            socket!!.close(NORMAL_CLOSURE_STATUS, null)
-        }
+        socket?.close(NORMAL_CLOSURE_STATUS, null)
         client.dispatcher.executorService.shutdown()
         super.onCleared()
     }

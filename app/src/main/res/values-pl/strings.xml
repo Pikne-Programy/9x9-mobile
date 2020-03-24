@@ -34,5 +34,5 @@
     <string name="dialog_debug_title_error">Błąd</string>
     <string name="dialog_debug_title_debug">Debug</string>
     <string name="label_tie">Remis</string>
-    <string name="warning_invalid_state">Błędny pakiet STT</string>
+    <string name="warning_invalid_stt">Błędny pakiet STT</string>
 </resources>

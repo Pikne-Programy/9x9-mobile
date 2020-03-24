@@ -47,7 +47,7 @@ class BoardActivity: AppCompatActivity() {
         viewModel = model
 
         //Obsługa dialogów
-        model.connectDialog.observe(this@BoardActivity, Observer {event ->
+        model.connectDialog.observe(this@BoardActivity, Observer { event ->
             event?.getContent()?.let {
                 //Łączenie z serwerem
                 for(dialog in model.dialogs) {
@@ -73,66 +73,70 @@ class BoardActivity: AppCompatActivity() {
         model.versionPacket.observe(this@BoardActivity, Observer { event ->
             event?.getContent()?.let {
                 //Wersja oprogramowania
-                for(dialog in model.dialogs) {
-                    if(dialog.isShowing) {
-                        dialog.dismiss()
+                if(model.connectDialog.value?.peekContent() != true) {
+                    for(dialog in model.dialogs) {
+                        if(dialog.isShowing) {
+                            dialog.dismiss()
+                        }
+                        model.dialogs.remove(dialog)
                     }
-                    model.dialogs.remove(dialog)
-                }
-                if(PreferenceManager.getDefaultSharedPreferences(viewModel.getApplication()).getBoolean(viewModel.getApplication<Application>().getString(R.string.key_debug_info), false)) {
-                    val builder = AlertDialog.Builder(ContextThemeWrapper(this@BoardActivity, theme))
-                    val linearLayout = layoutInflater.inflate(R.layout.dialog_version, null, false) as LinearLayout
-                    val textViewName = linearLayout.findViewById<TextView>(R.id.textViewName)
-                    val textViewAuthor = linearLayout.findViewById<TextView>(R.id.textViewAuthor)
-                    val textViewVersion = linearLayout.findViewById<TextView>(R.id.textViewVersion)
-                    val textViewFullName = linearLayout.findViewById<TextView>(R.id.textViewFullName)
-                    val textViewProtocolVersion = linearLayout.findViewById<TextView>(R.id.textViewProtocolVersion)
-                    val textViewNick = linearLayout.findViewById<TextView>(R.id.textViewNick)
-                    val textViewFullNick = linearLayout.findViewById<TextView>(R.id.textViewFullNick)
+                    if(PreferenceManager.getDefaultSharedPreferences(viewModel.getApplication()).getBoolean(viewModel.getApplication<Application>().getString(R.string.key_debug_info), false)) {
+                        val builder = AlertDialog.Builder(ContextThemeWrapper(this@BoardActivity, theme))
+                        val linearLayout = layoutInflater.inflate(R.layout.dialog_version, null, false) as LinearLayout
+                        val textViewName = linearLayout.findViewById<TextView>(R.id.textViewName)
+                        val textViewAuthor = linearLayout.findViewById<TextView>(R.id.textViewAuthor)
+                        val textViewVersion = linearLayout.findViewById<TextView>(R.id.textViewVersion)
+                        val textViewFullName = linearLayout.findViewById<TextView>(R.id.textViewFullName)
+                        val textViewProtocolVersion = linearLayout.findViewById<TextView>(R.id.textViewProtocolVersion)
+                        val textViewNick = linearLayout.findViewById<TextView>(R.id.textViewNick)
+                        val textViewFullNick = linearLayout.findViewById<TextView>(R.id.textViewFullNick)
 
-                    textViewName.text = textViewName.text.toString() + it.params.name
-                    textViewAuthor.text = textViewAuthor.text.toString() + it.params.author
-                    textViewVersion.text = textViewVersion.text.toString() + it.params.version
-                    textViewFullName.text = textViewFullName.text.toString() + it.params.fullName
-                    textViewProtocolVersion.text = textViewProtocolVersion.text.toString() + it.params.protocolVersion
-                    textViewNick.text = textViewNick.text.toString() + it.params.nick
-                    textViewFullNick.text = textViewFullNick.text.toString() + it.params.fullNick
+                        textViewName.text = textViewName.text.toString() + it.params.name
+                        textViewAuthor.text = textViewAuthor.text.toString() + it.params.author
+                        textViewVersion.text = textViewVersion.text.toString() + it.params.version
+                        textViewFullName.text = textViewFullName.text.toString() + it.params.fullName
+                        textViewProtocolVersion.text = textViewProtocolVersion.text.toString() + it.params.protocolVersion
+                        textViewNick.text = textViewNick.text.toString() + it.params.nick
+                        textViewFullNick.text = textViewFullNick.text.toString() + it.params.fullNick
 
-                    builder
-                        .setTitle(resources.getString(R.string.dialog_version_title))
-                        .setPositiveButton(resources.getString(android.R.string.ok)) {_, _ ->
+                        builder
+                            .setTitle(resources.getString(R.string.dialog_version_title))
+                            .setPositiveButton(resources.getString(android.R.string.ok)) {_, _ ->
                             viewModel.versionPacket.value = null
                         }
-                        .setView(linearLayout)
-                    val dialog = builder.create()
-                    viewModel.dialogs.add(dialog)
-                    dialog.show()
+                            .setView(linearLayout)
+                        val dialog = builder.create()
+                        viewModel.dialogs.add(dialog)
+                        dialog.show()
+                    }
                 }
             }
         })
         model.debugMsg.observe(this@BoardActivity, Observer { event ->
             event?.getContent()?.let {
                 //Debug i błędy
-                for(dialog in model.dialogs) {
-                    if(dialog.isShowing) {
-                        dialog.dismiss()
+                if(model.connectDialog.value?.peekContent() != true) {
+                    for(dialog in model.dialogs) {
+                        if(dialog.isShowing) {
+                            dialog.dismiss()
+                        }
+                        model.dialogs.remove(dialog)
                     }
-                    model.dialogs.remove(dialog)
-                }
-                if(PreferenceManager.getDefaultSharedPreferences(viewModel.getApplication()).getBoolean(viewModel.getApplication<Application>().getString(R.string.key_debug_info), false)) {
-                    val builder = AlertDialog.Builder(ContextThemeWrapper(this@BoardActivity, theme))
-                    builder
-                        .setTitle(when(it.method) {
-                            "ERR" -> R.string.dialog_debug_title_error
-                            else -> R.string.dialog_debug_title_debug
-                        })
-                        .setMessage(it.params.msg)
-                        .setPositiveButton(resources.getString(android.R.string.ok)) {_, _ ->
+                    if(PreferenceManager.getDefaultSharedPreferences(viewModel.getApplication()).getBoolean(viewModel.getApplication<Application>().getString(R.string.key_debug_info), false)) {
+                        val builder = AlertDialog.Builder(ContextThemeWrapper(this@BoardActivity, theme))
+                        builder
+                            .setTitle(when(it.method) {
+                                             "ERR" -> R.string.dialog_debug_title_error
+                                             else -> R.string.dialog_debug_title_debug
+                                         })
+                            .setMessage(it.params.msg)
+                            .setPositiveButton(resources.getString(android.R.string.ok)) {_, _ ->
                             viewModel.debugMsg.value = null
                         }
-                    val dialog = builder.create()
-                    viewModel.dialogs.add(dialog)
-                    dialog.show()
+                        val dialog = builder.create()
+                        viewModel.dialogs.add(dialog)
+                        dialog.show()
+                    }
                 }
             }
         })
@@ -144,7 +148,9 @@ class BoardActivity: AppCompatActivity() {
 
         //Obsługa aktualnego stanu gry
         model.currentGameState.observe(this@BoardActivity, Observer { event ->
-            updateGameState(event?.getContent())
+            event?.getContent()?.let {
+                updateGameState(it)
+            }
         })
 
         //Obsługa socketa w razie błędu
@@ -255,123 +261,118 @@ class BoardActivity: AppCompatActivity() {
     }
 
     //Aktualizacja stanu gry
-    private fun updateGameState(state: BoardModel?) {
-        if(state != null) {
-            //Resetowanie planszy
-            for(row in bigButtons) {
-                for(button in row) {
-                    button.setImageDrawable(null)
-                    button.visibility = View.INVISIBLE
-                }
+    private fun updateGameState(state: BoardModel) {
+        //Resetowanie planszy
+        for(row in bigButtons) {
+            for(button in row) {
+                button.setImageDrawable(null)
+                button.visibility = View.INVISIBLE
             }
-            for(row in buttons) {
-                for(button in row) {
-                    button.setImageDrawable(null)
-                    button.visibility = View.VISIBLE
-                }
-            }
-
-            //Ustawianie ikon na małych planszach
-            for(y in 0..8) {
-                for(x in 0..8) {
-                    when {
-                        state.board[y][x] == 'X' -> buttons[y][x].setImageDrawable(resources.getDrawable(R.drawable.ic_x_icon_24dp))
-                        state.board[y][x] == 'O' -> buttons[y][x].setImageDrawable(resources.getDrawable(R.drawable.ic_o_icon_24dp))
-                    }
-                }
-            }
-
-            //Ustawianie ikon na dużej planszy
-            for(yB in 0..2) {
-                for(xB in 0..2) {
-                    if(state.bigBoard[yB][xB] != '-') {
-                        for(y in (3*yB)..(3*yB + 2)) {
-                            for(x in (3*xB)..(3*xB + 2)) buttons[y][x].visibility = View.INVISIBLE
-                        }
-                        bigButtons[yB][xB].visibility = View.VISIBLE
-
-                        val drawableXId = R.drawable.ic_x_icon_24dp
-                        val drawableOId = R.drawable.ic_o_icon_24dp
-                        bigButtons[yB][xB].setImageDrawable(resources.getDrawable(when(state.bigBoard[yB][xB] == 'X') {
-                                                                                      true -> drawableXId
-                                                                                      false -> drawableOId
-                                                                                  }))
-                    }
-                }
-            }
-
-            //Ustawianie aktywnych pól
-            val markedY = state.marked/3
-            val markedX = state.marked%3
-            for(row in buttons) {
-                for(button in row) {
-                    val typedValue = TypedValue()
-                    if(theme.resolveAttribute(android.R.attr.windowBackground, typedValue, true)) {
-                        button.setBackgroundColor(typedValue.data)
-                    }
-                }
-            }
-            if(state.whoWon == "-") {
-                if(state.marked == -1) {
-                    for(row in buttons) {
-                        for(button in row) {
-                            button.setBackgroundColor(resources.getColor(when(state.move) {
-                                                                             state.you -> R.color.colorAccent
-                                                                             else -> R.color.colorAccentLight
-                                                                         }))
-                        }
-                    }
-                }
-                else {
-                    for(y in (3*markedY)..(3*markedY + 2)) {
-                        for(x in (3*markedX)..(3*markedX + 2)) {
-                            buttons[y][x].setBackgroundColor(resources.getColor(when(state.move) {
-                                                                                    state.you -> R.color.colorAccent
-                                                                                    else -> R.color.colorAccentLight
-                                                                                }))
-                        }
-                    }
-                }
-            }
-            for(row in buttons) {
-                for(button in row) {
-                    button.setColorFilter(ContextCompat.getColor(this@BoardActivity, when((button.background as ColorDrawable).color) {
-                        getColor(R.color.colorAccent) -> android.R.color.black
-                        getColor(R.color.colorAccentLight) -> android.R.color.black
-                        else -> {
-                            when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_theme), "AppTheme")) {
-                                getString(R.string.theme_dark) -> android.R.color.white
-                                else -> android.R.color.black
-                            }
-                        }
-                    }), android.graphics.PorterDuff.Mode.SRC_IN)
-                }
-            }
-
-            //Ustawianie aktywnego gracza/zwycięzcy
-            textViewYou.text = resources.getString(R.string.label_player_you) + state.you
-            when {
-                //Następna tura
-                state.whoWon == "-" && !state.isEnded -> {
-                    textViewActivePlayer.text = when(state.move) {
-                        state.you -> resources.getString(R.string.label_active_player_you)
-                        else -> resources.getString(R.string.label_active_player_opponent)
-                    }
-                }
-                //Ktoś wygrał
-                state.whoWon != "-" && state.isEnded -> {
-                    textViewActivePlayer.text = resources.getString(R.string.label_winner) + state.whoWon
-                }
-                //Remis
-                else -> {
-                    textViewActivePlayer.text = resources.getString(R.string.label_tie)
-                }
-            }
-
-            gameState = state
         }
-        else {
-            Toast.makeText(this@BoardActivity, R.string.warning_invalid_state, Toast.LENGTH_SHORT).show()
+        for(row in buttons) {
+            for(button in row) {
+                button.setImageDrawable(null)
+                button.visibility = View.VISIBLE
+            }
         }
+
+        //Ustawianie ikon na małych planszach
+        for(y in 0..8) {
+            for(x in 0..8) {
+                when {
+                    state.board[y][x] == 'X' -> buttons[y][x].setImageDrawable(resources.getDrawable(R.drawable.ic_x_icon_24dp))
+                    state.board[y][x] == 'O' -> buttons[y][x].setImageDrawable(resources.getDrawable(R.drawable.ic_o_icon_24dp))
+                }
+            }
+        }
+
+        //Ustawianie ikon na dużej planszy
+        for(yB in 0..2) {
+            for(xB in 0..2) {
+                if(state.bigBoard[yB][xB] != '-') {
+                    for(y in (3*yB)..(3*yB + 2)) {
+                        for(x in (3*xB)..(3*xB + 2)) buttons[y][x].visibility = View.INVISIBLE
+                    }
+                    bigButtons[yB][xB].visibility = View.VISIBLE
+
+                    val drawableXId = R.drawable.ic_x_icon_24dp
+                    val drawableOId = R.drawable.ic_o_icon_24dp
+                    bigButtons[yB][xB].setImageDrawable(resources.getDrawable(when(state.bigBoard[yB][xB] == 'X') {
+                                                                                  true -> drawableXId
+                                                                                  false -> drawableOId
+                                                                              }))
+                }
+            }
+        }
+
+        //Ustawianie aktywnych pól
+        val markedY = state.marked/3
+        val markedX = state.marked%3
+        for(row in buttons) {
+            for(button in row) {
+                val typedValue = TypedValue()
+                if(theme.resolveAttribute(android.R.attr.windowBackground, typedValue, true)) {
+                    button.setBackgroundColor(typedValue.data)
+                }
+            }
+        }
+        if(state.whoWon == "-") {
+            if(state.marked == -1) {
+                for(row in buttons) {
+                    for(button in row) {
+                        button.setBackgroundColor(resources.getColor(when(state.move) {
+                                                                         state.you -> R.color.colorAccent
+                                                                         else -> R.color.colorAccentLight
+                                                                     }))
+                    }
+                }
+            }
+            else {
+                for(y in (3*markedY)..(3*markedY + 2)) {
+                    for(x in (3*markedX)..(3*markedX + 2)) {
+                        buttons[y][x].setBackgroundColor(resources.getColor(when(state.move) {
+                                                                                state.you -> R.color.colorAccent
+                                                                                else -> R.color.colorAccentLight
+                                                                            }))
+                    }
+                }
+            }
+        }
+        for(row in buttons) {
+            for(button in row) {
+                button.setColorFilter(ContextCompat.getColor(this@BoardActivity, when((button.background as ColorDrawable).color) {
+                    getColor(R.color.colorAccent) -> android.R.color.black
+                    getColor(R.color.colorAccentLight) -> android.R.color.black
+                    else -> {
+                        when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_theme), "AppTheme")) {
+                            getString(R.string.theme_dark) -> android.R.color.white
+                            else -> android.R.color.black
+                        }
+                    }
+                }), android.graphics.PorterDuff.Mode.SRC_IN)
+            }
+        }
+
+        //Ustawianie aktywnego gracza/zwycięzcy
+        textViewYou.text = resources.getString(R.string.label_player_you) + state.you
+        when {
+            //Następna tura
+            state.whoWon == "-" && !state.isEnded -> {
+                textViewActivePlayer.text = when(state.move) {
+                    state.you -> resources.getString(R.string.label_active_player_you)
+                    else -> resources.getString(R.string.label_active_player_opponent)
+                }
+            }
+            //Ktoś wygrał
+            state.whoWon != "-" && state.isEnded -> {
+                textViewActivePlayer.text = resources.getString(R.string.label_winner) + state.whoWon
+            }
+            //Remis
+            else -> {
+                textViewActivePlayer.text = resources.getString(R.string.label_tie)
+            }
+        }
+
+        gameState = state
     }
 }

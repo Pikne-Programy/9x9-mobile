@@ -30,7 +30,7 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
     val NORMAL_CLOSURE_STATUS = 1000
 
     val interpretationTaskList = ArrayList<InterpretationTask>()
-    var currentGameState = MutableLiveData<Event<BoardModel?>>()
+    var currentGameState = MutableLiveData<Event<BoardModel>>()
     var wrongSocket = MutableLiveData<Event<Boolean>>()
 
     //Łączenie z serwerem

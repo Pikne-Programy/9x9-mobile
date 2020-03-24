@@ -9,9 +9,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.io.InputStreamReader
-import java.io.OutputStream
-import java.net.Socket
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.WebSocket
 
 open class CommunicationViewModel(application: Application): AndroidViewModel(application) {
     //Dialogi
@@ -21,50 +21,47 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
     var debugMsg = MutableLiveData<Event<PacketBadErrDbgUin>>()
 
     //IP i port serwera
-    val serverIP = (PreferenceManager.getDefaultSharedPreferences(application).getString(application.getString(R.string.key_ip), application.getString(R.string.default_ip)) ?: application.getString(R.string.default_ip)).toString()
-    val serverPORT = (PreferenceManager.getDefaultSharedPreferences(application).getString(application.getString(R.string.key_port), application.getString(R.string.default_port)) ?: application.getString(R.string.default_port)).toInt()
+    private val serverIP = (PreferenceManager.getDefaultSharedPreferences(application).getString(application.getString(R.string.key_ip), application.getString(R.string.default_ip)) ?: application.getString(R.string.default_ip)).toString()
+    private val serverPORT = (PreferenceManager.getDefaultSharedPreferences(application).getString(application.getString(R.string.key_port), application.getString(R.string.default_port)) ?: application.getString(R.string.default_port)).toInt()
 
     //Socket
-    var socket: Socket? = null
-    lateinit var output: OutputStream
-    lateinit var inputStream: InputStreamReader
+    private val client = OkHttpClient()
+    private var socket: WebSocket? = null
+    val NORMAL_CLOSURE_STATUS = 1000
 
-    //Listy AsyncTask'ów
-    val communicationTaskList = ArrayList<CommunicationTask>()
-    val sendTaskList = ArrayList<SendTask>()
-
-    var currentGameState = MutableLiveData<Event<BoardModel?>>()
+    val interpretationTaskList = ArrayList<InterpretationTask>()
+    var currentGameState = MutableLiveData<Event<BoardModel>>()
     var wrongSocket = MutableLiveData<Event<Boolean>>()
 
     //Łączenie z serwerem
     fun connect(roomName: String) {
-        ConnectTask(this@CommunicationViewModel, roomName).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-    }
-
-    //Odbieranie pakietu
-    fun communicate(packet: Packet?) {
-        val task = CommunicationTask(this@CommunicationViewModel, packet)
-        communicationTaskList.add(task)
-        task.execute()
+        connectDialog.value = Event(true)
+        wrongSocket.value = Event(false)
+        val request = Request.Builder().url("ws://$serverIP:$serverPORT").build()
+        val listener = EchoWebSocketListener(this@CommunicationViewModel, roomName)
+        socket = client.newWebSocket(request, listener)
     }
 
     //Wysyłanie ruchu gracza
     fun sendMove(x: Int, y: Int) {
-        val task = SendTask(this@CommunicationViewModel, PacketSET(params = ParamsSET(x, y), time = (System.currentTimeMillis()/1000L).toInt()))
-        sendTaskList.add(task)
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        val packet = PacketSET(params = ParamsSET(x, y), time = (System.currentTimeMillis()/1000L).toInt())
+        socket?.send(Gson().toJson(packet))
     }
 
     //Wysyłanie odpowiedzi na Ping
     fun sendPOG() {
-        val task = SendTask(this@CommunicationViewModel, PacketGetPngPog(method = "POG", params = ParamsGetPngPog(), time = (System.currentTimeMillis()/1000L).toInt()))
-        sendTaskList.add(task)
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        val packet = PacketGetPngPog(method = "POG", params = ParamsGetPngPog(), time = (System.currentTimeMillis()/1000L).toInt())
+        socket?.send(Gson().toJson(packet))
     }
 
     //Zamykanie Socketa
     override fun onCleared() {
-        CloseSocketTask(this@CommunicationViewModel).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        for(task in interpretationTaskList) {
+            if(task.status == AsyncTask.Status.RUNNING || task.status == AsyncTask.Status.PENDING)
+                task.cancel(false)
+        }
+        socket?.close(NORMAL_CLOSURE_STATUS, null)
+        client.dispatcher.executorService.shutdown()
         super.onCleared()
     }
 

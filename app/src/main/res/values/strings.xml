@@ -1,5 +1,4 @@
 <resources>
-
     <string name="app_name">Tic Tac Toe 9x9</string>
     <string name="title_activity_settings">Settings</string>
 
@@ -32,7 +31,7 @@
 
     <!-- Warnings -->
     <string name="warning_invalid_board">Invalid board</string>
-    <string name="warning_invalid_state">Invalid STT Packet</string>
+    <string name="warning_invalid_stt">Invalid STT Packet</string>
     <string name="warning_invalid_ip_port">Invalid server IP or port</string>
 
 

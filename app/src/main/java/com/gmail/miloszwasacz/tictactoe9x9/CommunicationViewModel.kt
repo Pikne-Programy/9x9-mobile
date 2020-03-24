@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION")
 package com.gmail.miloszwasacz.tictactoe9x9
 
 import android.app.Application
@@ -14,11 +15,9 @@ import okhttp3.WebSocket
 
 open class CommunicationViewModel(application: Application): AndroidViewModel(application) {
     //Dialogi
-    var dialogId = MutableLiveData<Event<Int>>()
     var dialogs = ArrayList<Dialog>()
-    val removeDialog = -1
-    val connectDialogId = 0
-    val versionDialogId = 1
+    var connectDialog = MutableLiveData<Event<Boolean>>()
+    var versionPacket = MutableLiveData<Event<PacketVER?>>()
     var debugMsg = MutableLiveData<Event<PacketBadErrDbgUin>>()
 
     //IP i port serwera
@@ -31,13 +30,12 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
     val NORMAL_CLOSURE_STATUS = 1000
 
     val interpretationTaskList = ArrayList<InterpretationTask>()
-    var currentGameState = MutableLiveData<Event<BoardModel>>()
+    var currentGameState = MutableLiveData<Event<BoardModel?>>()
     var wrongSocket = MutableLiveData<Event<Boolean>>()
-    var versionPacket: PacketVER? = null
 
     //Łączenie z serwerem
     fun connect(roomName: String) {
-        dialogId.value = Event(connectDialogId)
+        connectDialog.value = Event(true)
         wrongSocket.value = Event(false)
         val request = Request.Builder().url("ws://$serverIP:$serverPORT").build()
         val listener = EchoWebSocketListener(this@CommunicationViewModel, roomName)
@@ -61,6 +59,9 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
         for(task in interpretationTaskList) {
             if(task.status == AsyncTask.Status.RUNNING || task.status == AsyncTask.Status.PENDING)
                 task.cancel(false)
+        }
+        if(socket != null) {
+            socket!!.close(NORMAL_CLOSURE_STATUS, null)
         }
         client.dispatcher.executorService.shutdown()
         super.onCleared()
@@ -87,7 +88,7 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
     }
 
     //Konwersja pakietu na stan gry
-    fun createBoardState(packet: PacketSTT): BoardModel {
+    fun createBoardState(packet: PacketSTT): BoardModel? {
         //Konwersja planszy
         val board = ArrayList<ArrayList<Char>>()
         val bigBoard = ArrayList<ArrayList<Char>>()
@@ -101,15 +102,25 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
             for(x in 0..2)
                 bigBoard[y].add(packet.params.bigBoard[y*3 + x])
         }
-        //Ustawianie aktywnego pola na planszy
-        val marked = packet.params.marked
+        //Ustawianie końca gry
+        val isEnded = packet.params.isEnded
         //Ustawianie zwycięzcy
-        val winner = packet.params.whoWon
+        val whoWon = packet.params.whoWon
         //Ustawianie gracza
         val you = packet.params.you
         //Ustawianie aktywnego gracza
         val move = packet.params.move
+        //Ustawianie ostatniego ruchu
+        val lastMove = packet.params.lastMove
+        //Ustawianie aktywnego pola na planszy
+        val marked = packet.params.marked
 
-        return BoardModel(board, bigBoard, winner, you, move, marked)
+        return  try {
+            BoardModel(board, bigBoard, isEnded, whoWon, you, move, lastMove, marked)
+        }
+        catch(e: IllegalArgumentException) {
+            null
+        }
+
     }
 }

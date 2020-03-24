@@ -16,7 +16,7 @@
     <string name="dialog_version_label_protocol_version">"wersja protokołu: "</string>
     <string name="dialog_version_label_nick">"nick: "</string>
     <string name="dialog_version_label_full_nick">"pełny nick: "</string>
-    <string name="warning_invalid_game">Błędna rozgrywka</string>
+    <string name="warning_invalid_board">Błędna plansza</string>
     <string name="label_active_player_you">Twoja tura</string>
     <string name="label_active_player_opponent">Tura przeciwnika</string>
     <string name="label_player_you">"Grasz "</string>
@@ -33,4 +33,6 @@
     <string name="debug_info_title">Wyświetlanie informacji o błędach i danych do debugu</string>
     <string name="dialog_debug_title_error">Błąd</string>
     <string name="dialog_debug_title_debug">Debug</string>
+    <string name="label_tie">Remis</string>
+    <string name="warning_invalid_state">Błędny pakiet STT</string>
 </resources>

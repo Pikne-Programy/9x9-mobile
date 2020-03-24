@@ -11,10 +11,11 @@
     <string name="hint_room_name">Room name</string>
     <string name="label_active_player_you">Your turn</string>
     <string name="label_active_player_opponent">Opponent\'s turn</string>
-    <string name="label_winner">Winner: </string>
     <string name="label_player_you">You: </string>
+    <string name="label_winner">Winner: </string>
+    <string name="label_tie">Tie</string>
 
-    <!-- Dialogs and warnings -->
+    <!-- Dialogs -->
     <string name="dialog_join_title">Joining Room</string>
     <string name="dialog_join_description">Waiting for an opponent</string>
     <string name="dialog_version_title">Software information</string>
@@ -27,7 +28,10 @@
     <string name="dialog_version_label_full_nick">full nick: </string>
     <string name="dialog_debug_title_error">Error</string>
     <string name="dialog_debug_title_debug">Debug</string>
-    <string name="warning_invalid_game">Invalid game</string>
+
+    <!-- Warnings -->
+    <string name="warning_invalid_board">Invalid board</string>
+    <string name="warning_invalid_state">Invalid STT Packet</string>
     <string name="warning_invalid_ip_port">Invalid server IP or port</string>
 
 

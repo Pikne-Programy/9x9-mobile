@@ -18,12 +18,13 @@ class InterpretationTask(private val viewModel: CommunicationViewModel, private 
             when(resultPacket) {
                 //Odbieranie planszy
                 is PacketSTT -> {
-                    if(viewModel.createBoardState(resultPacket) == null) {
+                    val result = viewModel.createBoardState(resultPacket)
+                    if(result == null) {
                         viewModel.debugMsg.value = Event(PacketBadErrDbgUin(method = "ERR", params = ParamsBadErrDbgUin(viewModel.getApplication<Application>().getString(R.string.warning_invalid_stt)), time = resultPacket.time))
                     }
                     else {
                         viewModel.connectDialog.value = Event(false)
-                        viewModel.currentGameState.value = Event(viewModel.createBoardState(resultPacket))
+                        viewModel.currentGameState.value = Event(result)
                     }
                     Log.i("packetSTT", resultPacket.toString())
                 }

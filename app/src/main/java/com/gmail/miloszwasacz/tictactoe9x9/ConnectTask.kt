@@ -19,7 +19,7 @@ class ConnectTask(private var viewModel: CommunicationViewModel, private var roo
     private val serverPORT = viewModel.serverPORT
 
     override fun onPreExecute() {
-        viewModel.dialogId.value = Event(viewModel.connectDialogId)
+        viewModel.connectDialog.value = Event(true)
         viewModel.wrongSocket.value = Event(false)
         socket = Socket()
     }
@@ -49,7 +49,6 @@ class ConnectTask(private var viewModel: CommunicationViewModel, private var roo
             viewModel.socket = socket
             viewModel.output = output
             viewModel.inputStream = inputStream
-            if(viewModel.deserializePacketFromServer(result).method == "STT") viewModel.dialogId.value = Event(viewModel.removeDialog)
             val resultPacket = viewModel.deserializePacketFromServer(result)
             viewModel.communicate(resultPacket)
         }

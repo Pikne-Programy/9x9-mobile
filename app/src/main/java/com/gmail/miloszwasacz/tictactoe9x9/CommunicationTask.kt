@@ -13,8 +13,22 @@ class CommunicationTask(private val viewModel: CommunicationViewModel, private v
     override fun onPreExecute() {
         input = BufferedReader(inputStream)
 
-        if(inputPacket != null && inputPacket is PacketSTT) {
-            viewModel.currentGameState.value = Event(viewModel.createBoardState(inputPacket))
+        if(inputPacket != null) {
+            when(inputPacket) {
+                is PacketSTT -> {
+                    viewModel.connectDialog.value = Event(false)
+                    viewModel.currentGameState.value = Event(viewModel.createBoardState(inputPacket))
+                }
+                is PacketVER -> {
+                    viewModel.connectDialog.value = Event(false)
+                    viewModel.versionPacket.value = Event(inputPacket)
+                }
+                is PacketBadErrDbgUin -> {
+                    viewModel.connectDialog.value = Event(false)
+                    viewModel.debugMsg.value = Event(inputPacket)
+                    Log.i("packetMSG", inputPacket.params.msg)
+                }
+            }
         }
     }
 
@@ -40,7 +54,9 @@ class CommunicationTask(private val viewModel: CommunicationViewModel, private v
             when(resultPacket) {
                 //Odbieranie planszy
                 is PacketSTT -> {
-                    viewModel.dialogId.value = Event(viewModel.removeDialog)
+                    if(viewModel.connectDialog.value == Event(true)) {
+                        viewModel.connectDialog.value = Event(false)
+                    }
                     viewModel.currentGameState.value = Event(viewModel.createBoardState(resultPacket))
                     viewModel.communicate(null)
                 }
@@ -53,12 +69,17 @@ class CommunicationTask(private val viewModel: CommunicationViewModel, private v
                 }
                 //Wyświetlanie info o oprogramowaniu
                 is PacketVER -> {
-                    viewModel.versionPacket = resultPacket
-                    viewModel.dialogId.value = Event(viewModel.versionDialogId)
+                    if(viewModel.connectDialog.value == Event(true)) {
+                        viewModel.connectDialog.value = Event(false)
+                    }
+                    viewModel.versionPacket.value = Event(resultPacket)
                     viewModel.communicate(null)
                 }
                 //Zapisywanie błędów itp. w Log'u
                 else -> {
+                    if(viewModel.connectDialog.value == Event(true)) {
+                        viewModel.connectDialog.value = Event(false)
+                    }
                     viewModel.debugMsg.value = Event(resultPacket as PacketBadErrDbgUin)
                     Log.i("packetMSG", resultPacket.params.msg)
 

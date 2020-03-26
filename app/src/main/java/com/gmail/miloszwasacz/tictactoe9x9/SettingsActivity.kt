@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
+import com.takisoft.preferencex.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 
 class SettingsActivity: AppCompatActivity() {
@@ -26,7 +26,7 @@ class SettingsActivity: AppCompatActivity() {
 }
 
 class SettingsFragment: PreferenceFragmentCompat() {
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
         
         val themePreference = findPreference<ListPreference>(getString(R.string.key_theme))

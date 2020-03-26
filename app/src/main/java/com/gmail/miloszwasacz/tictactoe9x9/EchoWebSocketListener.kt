@@ -25,7 +25,7 @@ class EchoWebSocketListener(private val viewModel: CommunicationViewModel, priva
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-        val task = InterpretationTask(viewModel, Gson().toJson(PacketBadErrDbgUin(method = "ERR", params = ParamsBadErrDbgUin(t.message ?: "connection error"), time = (System.currentTimeMillis()/1000L).toInt())))
+        val task = InterpretationTask(viewModel, null)
         viewModel.interpretationTaskList.add(task)
         task.execute()
         Log.i("Error", t.message ?: "error")

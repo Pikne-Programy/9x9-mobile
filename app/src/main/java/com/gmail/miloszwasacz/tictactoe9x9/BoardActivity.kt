@@ -157,7 +157,7 @@ class BoardActivity: AppCompatActivity() {
         model.wrongSocket.observe(this@BoardActivity, Observer { event ->
             event?.getContent()?.let {
                 if(it) {
-                    Toast.makeText(this@BoardActivity, R.string.warning_invalid_ip_port, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@BoardActivity, R.string.warning_connection_error, Toast.LENGTH_SHORT).show()
                     finish()
                 }
             }
@@ -340,6 +340,8 @@ class BoardActivity: AppCompatActivity() {
                 }
             }
         }
+
+        //Ustawianie kolorów ikonek na buttonach
         for(row in buttons) {
             for(button in row) {
                 button.setColorFilter(ContextCompat.getColor(this@BoardActivity, when((button.background as ColorDrawable).color) {
@@ -354,13 +356,26 @@ class BoardActivity: AppCompatActivity() {
                 }), android.graphics.PorterDuff.Mode.SRC_IN)
             }
         }
+        for(row in bigButtons) {
+            for(button in row) {
+                button.setColorFilter(ContextCompat.getColor(this@BoardActivity, when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_theme), "AppTheme")) {
+                    getString(R.string.theme_dark) -> android.R.color.white
+                    else -> android.R.color.black
+                }), android.graphics.PorterDuff.Mode.SRC_IN)
+            }
+        }
 
         //Ustawianie ostatniego ruchu
         if(state.lastMove != null) {
             val x = state.lastMove.x
             val y = state.lastMove.y
             if(indexRange.contains(x) && indexRange.contains(y)) {
-                buttons[y][x].setColorFilter(ContextCompat.getColor(this@BoardActivity, R.color.colorPrimary), android.graphics.PorterDuff.Mode.SRC_IN)
+                if(buttons[y][x].visibility == View.INVISIBLE) {
+                    bigButtons[y/3][x/3].setColorFilter(ContextCompat.getColor(this@BoardActivity, R.color.colorPrimary), android.graphics.PorterDuff.Mode.SRC_IN)
+                }
+                else {
+                    buttons[y][x].setColorFilter(ContextCompat.getColor(this@BoardActivity, R.color.colorPrimary), android.graphics.PorterDuff.Mode.SRC_IN)
+                }
             }
         }
 

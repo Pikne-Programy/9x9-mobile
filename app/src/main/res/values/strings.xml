@@ -32,7 +32,7 @@
     <!-- Warnings -->
     <string name="warning_invalid_board">Invalid board</string>
     <string name="warning_invalid_stt">Invalid STT Packet</string>
-    <string name="warning_invalid_ip_port">Invalid server IP or port</string>
+    <string name="warning_connection_error">Connection error</string>
 
 
     <!-- Preference Titles -->

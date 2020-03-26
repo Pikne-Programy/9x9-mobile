@@ -22,7 +22,7 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
 
     //IP i port serwera
     private val serverIP = (PreferenceManager.getDefaultSharedPreferences(application).getString(application.getString(R.string.key_ip), application.getString(R.string.default_ip)) ?: application.getString(R.string.default_ip)).toString()
-    private val serverPORT = (PreferenceManager.getDefaultSharedPreferences(application).getString(application.getString(R.string.key_port), application.getString(R.string.default_port)) ?: application.getString(R.string.default_port)).toInt()
+    private val serverPORT = tryParse(PreferenceManager.getDefaultSharedPreferences(application).getString(application.getString(R.string.key_port), application.getString(R.string.default_port)) ?: application.getString(R.string.default_port), 65535)
 
     //Socket
     private val client = OkHttpClient()
@@ -51,6 +51,12 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
     //Wysyłanie odpowiedzi na Ping
     fun sendPOG() {
         val packet = PacketGetPngPog(method = "POG", params = ParamsGetPngPog(), time = (System.currentTimeMillis()/1000L).toInt())
+        socket?.send(Gson().toJson(packet))
+    }
+
+    //Wysłanie prośby o pakiet STT
+    fun sendGET() {
+        val packet = PacketGetPngPog(method = "GET", params = ParamsGetPngPog(), time = (System.currentTimeMillis()/1000L).toInt())
         socket?.send(Gson().toJson(packet))
     }
 
@@ -119,6 +125,12 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
         catch(e: IllegalArgumentException) {
             null
         }
+    }
 
+    //tryParse int
+    fun tryParse(value: String, defaultVal: Int) = try {
+        Integer.parseInt(value)
+    } catch (e: NumberFormatException) {
+        defaultVal
     }
 }

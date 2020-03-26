@@ -15,14 +15,14 @@ jobs:
     steps:
     - name: Assign issues and pull requests to To do (Bugs) column in General project
       uses: srggrs/assign-one-project-github-action@1.2.0
-      if: (github.event.action == 'opened' || github.event.action == 'reopened') && (contains(github.event.issue.labels.*.name, 'bug') || contains(github.event.pull_request.labels.*.name, 'bug') || contains(github.event.issue.labels.*.name, 'improvement') || contains(github.event.pull_request.labels.*.name, 'improvement'))
+      if: contains(github.event.issue.labels.*.name, 'bug') || contains(github.event.pull_request.labels.*.name, 'bug') || contains(github.event.issue.labels.*.name, 'improvement') || contains(github.event.pull_request.labels.*.name, 'improvement')
       with:
         project: 'https://github.com/Pikne-Programy/9x9-mobile/projects/1'
         column_name: 'To do (Bugs)'
         
     - name: Assign issues and pull requests to To do (Features) column in General project
       uses: srggrs/assign-one-project-github-action@1.2.0
-      if: (github.event.action == 'opened' || github.event.action == 'reopened') && (contains(github.event.issue.labels.*.name, 'enhancement') || contains(github.event.pull_request.labels.*.name, 'enhancement'))
+      if: contains(github.event.issue.labels.*.name, 'enhancement') || contains(github.event.pull_request.labels.*.name, 'enhancement')
       with:
         project: 'https://github.com/Pikne-Programy/9x9-mobile/projects/1'
         column_name: 'To do (Features)'

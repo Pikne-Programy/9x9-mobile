@@ -1,3 +1,3 @@
 package com.gmail.miloszwasacz.tictactoe9x9
 
-class LastMove(var x: Int, var y: Int)
+class LastMove(val x: Int, val y: Int)

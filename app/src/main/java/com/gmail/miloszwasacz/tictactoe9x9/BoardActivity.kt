@@ -262,6 +262,8 @@ class BoardActivity: AppCompatActivity() {
 
     //Aktualizacja stanu gry
     private fun updateGameState(state: BoardModel) {
+        val indexRange = 0..8
+
         //Resetowanie planszy
         for(row in bigButtons) {
             for(button in row) {
@@ -277,7 +279,7 @@ class BoardActivity: AppCompatActivity() {
         }
 
         //Ustawianie ikon na małych planszach
-        for(y in 0..8) {
+        for(y in indexRange) {
             for(x in 0..8) {
                 when {
                     state.board[y][x] == 'X' -> buttons[y][x].setImageDrawable(resources.getDrawable(R.drawable.ic_x_icon_24dp))
@@ -327,7 +329,7 @@ class BoardActivity: AppCompatActivity() {
                     }
                 }
             }
-            else {
+            else if(indexRange.contains(markedY) && indexRange.contains(markedX)) {
                 for(y in (3*markedY)..(3*markedY + 2)) {
                     for(x in (3*markedX)..(3*markedX + 2)) {
                         buttons[y][x].setBackgroundColor(resources.getColor(when(state.move) {
@@ -350,6 +352,15 @@ class BoardActivity: AppCompatActivity() {
                         }
                     }
                 }), android.graphics.PorterDuff.Mode.SRC_IN)
+            }
+        }
+
+        //Ustawianie ostatniego ruchu
+        if(state.lastMove != null) {
+            val x = state.lastMove.x
+            val y = state.lastMove.y
+            if(indexRange.contains(x) && indexRange.contains(y)) {
+                buttons[y][x].setColorFilter(ContextCompat.getColor(this@BoardActivity, R.color.colorPrimary), android.graphics.PorterDuff.Mode.SRC_IN)
             }
         }
 

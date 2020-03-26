@@ -1,3 +1,3 @@
 package com.gmail.miloszwasacz.tictactoe9x9
 
-class ParamsVER(var name: String, var author: String, var version: String, var fullName: String, var protocolVersion: String, var nick: String, var fullNick: String): ParamsGetPngPog()
+class ParamsVER(val name: String, val author: String, val version: String, val fullName: String, val protocolVersion: String, val nick: String, val fullNick: String): ParamsGetPngPog()

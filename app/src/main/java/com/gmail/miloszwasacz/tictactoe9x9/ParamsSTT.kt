@@ -1,3 +1,3 @@
 package com.gmail.miloszwasacz.tictactoe9x9
 
-class ParamsSTT(var board: String, var bigBoard: String, var isEnded: Boolean, var whoWon: String, var you: String, var move: String, var lastMove: LastMove, var marked: Int): ParamsGetPngPog()
+class ParamsSTT(val board: String, val bigBoard: String, val isEnded: Boolean, val whoWon: String, val you: String, val move: String, val lastMove: LastMove?, val marked: Int): ParamsGetPngPog()

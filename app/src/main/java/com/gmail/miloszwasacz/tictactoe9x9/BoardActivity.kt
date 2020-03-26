@@ -382,16 +382,16 @@ class BoardActivity: AppCompatActivity() {
         //Ustawianie aktywnego gracza/zwycięzcy
         textViewYou.text = resources.getString(R.string.label_player_you) + state.you
         when {
+            //Ktoś wygrał
+            state.whoWon != "-" -> {
+                textViewActivePlayer.text = resources.getString(R.string.label_winner) + state.whoWon
+            }
             //Następna tura
             state.whoWon == "-" && !state.isEnded -> {
                 textViewActivePlayer.text = when(state.move) {
                     state.you -> resources.getString(R.string.label_active_player_you)
                     else -> resources.getString(R.string.label_active_player_opponent)
                 }
-            }
-            //Ktoś wygrał
-            state.whoWon != "-" && state.isEnded -> {
-                textViewActivePlayer.text = resources.getString(R.string.label_winner) + state.whoWon
             }
             //Remis
             else -> {

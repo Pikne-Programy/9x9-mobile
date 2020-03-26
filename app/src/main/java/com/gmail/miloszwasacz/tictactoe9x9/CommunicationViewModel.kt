@@ -107,7 +107,16 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
                 bigBoard[y].add(packet.params.bigBoard[y*3 + x])
         }
         //Ustawianie końca gry
-        val isEnded = packet.params.isEnded
+        var isEnded = true
+        for(row in bigBoard) {
+            for(char in row) {
+                if(char == '-') {
+                    isEnded = false
+                    break
+                }
+            }
+            if(!isEnded) break
+        }
         //Ustawianie zwycięzcy
         val whoWon = packet.params.whoWon
         //Ustawianie gracza

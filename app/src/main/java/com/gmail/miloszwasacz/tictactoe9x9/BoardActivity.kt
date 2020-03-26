@@ -291,7 +291,7 @@ class BoardActivity: AppCompatActivity() {
         //Ustawianie ikon na dużej planszy
         for(yB in 0..2) {
             for(xB in 0..2) {
-                if(state.bigBoard[yB][xB] != '-') {
+                if(state.bigBoard[yB][xB] != '-' && state.bigBoard[yB][xB] != '+') {
                     for(y in (3*yB)..(3*yB + 2)) {
                         for(x in (3*xB)..(3*xB + 2)) buttons[y][x].visibility = View.INVISIBLE
                     }
@@ -310,6 +310,7 @@ class BoardActivity: AppCompatActivity() {
         //Ustawianie aktywnych pól
         val markedY = state.marked/3
         val markedX = state.marked%3
+
         for(row in buttons) {
             for(button in row) {
                 val typedValue = TypedValue()
@@ -322,10 +323,12 @@ class BoardActivity: AppCompatActivity() {
             if(state.marked == -1) {
                 for(row in buttons) {
                     for(button in row) {
-                        button.setBackgroundColor(resources.getColor(when(state.move) {
-                                                                         state.you -> R.color.colorAccent
-                                                                         else -> R.color.colorAccentLight
-                                                                     }))
+                        if(state.bigBoard[buttons.indexOf(row)/3][row.indexOf(button)/3] != '+') {
+                            button.setBackgroundColor(resources.getColor(when(state.move) {
+                                                                             state.you -> R.color.colorAccent
+                                                                             else -> R.color.colorAccentLight
+                                                                         }))
+                        }
                     }
                 }
             }
@@ -382,20 +385,20 @@ class BoardActivity: AppCompatActivity() {
         //Ustawianie aktywnego gracza/zwycięzcy
         textViewYou.text = resources.getString(R.string.label_player_you) + state.you
         when {
-            //Ktoś wygrał
-            state.whoWon != "-" -> {
-                textViewActivePlayer.text = resources.getString(R.string.label_winner) + state.whoWon
+            //Remis
+            state.whoWon == "+" -> {
+                textViewActivePlayer.text = resources.getString(R.string.label_tie)
             }
             //Następna tura
-            state.whoWon == "-" && !state.isEnded -> {
+            state.whoWon == "-" -> {
                 textViewActivePlayer.text = when(state.move) {
                     state.you -> resources.getString(R.string.label_active_player_you)
                     else -> resources.getString(R.string.label_active_player_opponent)
                 }
             }
-            //Remis
+            //Ktoś wygrał
             else -> {
-                textViewActivePlayer.text = resources.getString(R.string.label_tie)
+                textViewActivePlayer.text = resources.getString(R.string.label_winner) + state.whoWon
             }
         }
 

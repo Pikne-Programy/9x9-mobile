@@ -384,13 +384,13 @@ class BoardActivity: AppCompatActivity() {
 
         //Ustawianie aktywnego gracza/zwycięzcy
         textViewYou.text = resources.getString(R.string.label_player_you) + state.you
-        when {
+        when(state.whoWon) {
             //Remis
-            state.whoWon == "+" -> {
+            "+" -> {
                 textViewActivePlayer.text = resources.getString(R.string.label_tie)
             }
             //Następna tura
-            state.whoWon == "-" -> {
+            "-" -> {
                 textViewActivePlayer.text = when(state.move) {
                     state.you -> resources.getString(R.string.label_active_player_you)
                     else -> resources.getString(R.string.label_active_player_opponent)

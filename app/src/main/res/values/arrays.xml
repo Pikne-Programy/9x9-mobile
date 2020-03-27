@@ -6,7 +6,23 @@
     </string-array>
 
     <string-array name="theme_values">
-        <item>@string/theme_light</item>
-        <item>@string/theme_dark</item>
+        <item>@string/theme_value_light</item>
+        <item>@string/theme_value_dark</item>
     </string-array>
+
+    <!-- Notifications Preference -->
+    <string-array name="notifications_entries">
+        <item>@string/notifications_name_all</item>
+        <item>@string/notifications_name_sound</item>
+        <item>@string/notifications_name_vibration</item>
+        <item>@string/notifications_name_none</item>
+    </string-array>
+
+    <string-array name="notifications_values">
+        <item>@string/notifications_value_all</item>
+        <item>@string/notifications_value_sound</item>
+        <item>@string/notifications_value_vibration</item>
+        <item>@string/notifications_value_none</item>
+    </string-array>
+
 </resources>

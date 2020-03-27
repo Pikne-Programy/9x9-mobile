@@ -45,19 +45,19 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
     //Wysyłanie ruchu gracza
     fun sendMove(x: Int, y: Int) {
         val packet = PacketSET(params = ParamsSET(x, y), time = (System.currentTimeMillis()/1000L).toInt())
-        socket?.send(Gson().toJson(packet))
+        socket?.send(Gson().toJson(packet) + "\r\n")
     }
 
     //Wysyłanie odpowiedzi na Ping
     fun sendPOG() {
         val packet = PacketGetPngPog(method = "POG", params = ParamsGetPngPog(), time = (System.currentTimeMillis()/1000L).toInt())
-        socket?.send(Gson().toJson(packet))
+        socket?.send(Gson().toJson(packet) + "\r\n")
     }
 
     //Wysłanie prośby o pakiet STT
     fun sendGET() {
         val packet = PacketGetPngPog(method = "GET", params = ParamsGetPngPog(), time = (System.currentTimeMillis()/1000L).toInt())
-        socket?.send(Gson().toJson(packet))
+        socket?.send(Gson().toJson(packet) + "\r\n")
     }
 
     //Zamykanie Socketa

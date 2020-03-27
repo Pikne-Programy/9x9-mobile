@@ -5,14 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
 import androidx.preference.Preference
-import com.takisoft.preferencex.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import com.takisoft.preferencex.PreferenceFragmentCompat
 
 class SettingsActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         when(PreferenceManager.getDefaultSharedPreferences(this@SettingsActivity).getString(getString(R.string.key_theme), "AppTheme")) {
-            getString(R.string.theme_dark) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            getString(R.string.theme_value_dark) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
         super.onCreate(savedInstanceState)
@@ -30,7 +30,6 @@ class SettingsFragment: PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
         
         val themePreference = findPreference<ListPreference>(getString(R.string.key_theme))
-        themePreference?.summary = themePreference?.entries?.get(themePreference.findIndexOfValue(themePreference.value))
         themePreference?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener {_, _ ->
             activity?.recreate()
             return@OnPreferenceChangeListener true

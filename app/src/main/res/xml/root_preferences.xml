@@ -16,18 +16,25 @@
             android:inputType="number"
             app:useSimpleSummaryProvider="true" />
 
-
-
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/appearance_header">
 
         <ListPreference
             app:key="@string/key_theme"
-            app:defaultValue="@string/theme_light"
+            app:defaultValue="@string/theme_value_light"
             app:entries="@array/theme_entries"
             app:entryValues="@array/theme_values"
-            app:title="@string/theme_title" />
+            app:title="@string/theme_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:key="@string/key_notifications"
+            app:defaultValue="@string/notifications_value_sound"
+            app:entries="@array/notifications_entries"
+            app:entryValues="@array/notifications_values"
+            app:title="@string/notifications_title"
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
@@ -36,7 +43,8 @@
         <SwitchPreference
             app:key="@string/key_debug_info"
             app:defaultValue="false"
-            app:title="@string/debug_info_title" />
+            app:title="@string/debug_info_title"
+            app:summary="@string/debug_info_description"/>
 
     </PreferenceCategory>
 

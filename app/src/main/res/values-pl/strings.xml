@@ -30,9 +30,15 @@
     <string name="theme_title">Motyw aplikacji</string>
     <string name="warning_connection_error">Błąd połączenia</string>
     <string name="developer_header">Opcje programisty</string>
-    <string name="debug_info_title">Wyświetlanie informacji o błędach i danych do debugu</string>
+    <string name="debug_info_title">Dane do debugowania</string>
     <string name="dialog_debug_title_error">Błąd</string>
     <string name="dialog_debug_title_debug">Debug</string>
     <string name="label_tie">Remis</string>
     <string name="warning_invalid_stt">Błędny pakiet STT</string>
+    <string name="debug_info_description">Wyświetla informacje o błędach i debugu</string>
+    <string name="notifications_title">Powiadomienia o turze</string>
+    <string name="notifications_name_none">Brak</string>
+    <string name="notifications_name_all">Dźwięk i wibracje</string>
+    <string name="notifications_name_sound">Dźwięk</string>
+    <string name="notifications_name_vibration">Wibracje</string>
 </resources>

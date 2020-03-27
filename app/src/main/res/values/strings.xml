@@ -44,6 +44,7 @@
     <string name="key_ip" translatable="false">key_ip</string>
     <string name="key_port" translatable="false">key_port</string>
     <string name="key_theme" translatable="false">key_theme</string>
+    <string name="key_notifications" translatable="false">key_notifications</string>
     <string name="key_debug_info" translatable="false">key_dev</string>
 
     <!-- Connection Preferences -->
@@ -53,13 +54,23 @@
     <string name="default_port" translatable="false">4780</string>
 
     <!-- Appearance Preferences -->
-    <string name="theme_title">App theme</string>
+    <string name="theme_title">Theme</string>
     <string name="theme_name_light">Light</string>
     <string name="theme_name_dark">Dark</string>
-    <string name="theme_light" translatable="false">AppTheme</string>
-    <string name="theme_dark" translatable="false">AppThemeDark</string>
+    <string name="theme_value_light" translatable="false">AppTheme</string>
+    <string name="theme_value_dark" translatable="false">AppThemeDark</string>
+    <string name="notifications_title">Round Notifications</string>
+    <string name="notifications_name_all">Sound and vibration</string>
+    <string name="notifications_name_sound">Sound</string>
+    <string name="notifications_name_vibration">Vibration</string>
+    <string name="notifications_name_none">None</string>
+    <string name="notifications_value_all" translatable="false">All</string>
+    <string name="notifications_value_sound" translatable="false">Sound</string>
+    <string name="notifications_value_vibration" translatable="false">Vibration</string>
+    <string name="notifications_value_none" translatable="false">None</string>
 
     <!-- Developer Preferences -->
-    <string name="debug_info_title">Show errors and debug data</string>
+    <string name="debug_info_title">Debug data</string>
+    <string name="debug_info_description">Shows errors and debug data</string>
 
 </resources>

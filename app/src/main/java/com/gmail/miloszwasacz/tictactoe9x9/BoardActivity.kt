@@ -3,8 +3,11 @@ package com.gmail.miloszwasacz.tictactoe9x9
 
 import android.app.Application
 import android.app.ProgressDialog
+import android.content.Context
 import android.graphics.drawable.ColorDrawable
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Vibrator
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
@@ -31,7 +34,7 @@ class BoardActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_theme), "AppTheme")) {
-            getString(R.string.theme_dark) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            getString(R.string.theme_value_dark) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
         super.onCreate(savedInstanceState)
@@ -193,7 +196,7 @@ class BoardActivity: AppCompatActivity() {
                     button.setBackgroundColor(typedValue.data)
                 }
                 button.setColorFilter(ContextCompat.getColor(this@BoardActivity, when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_theme), "AppTheme")) {
-                    getString(R.string.theme_dark) -> android.R.color.white
+                    getString(R.string.theme_value_dark) -> android.R.color.white
                     else -> android.R.color.black
                 }), android.graphics.PorterDuff.Mode.SRC_IN)
 
@@ -225,7 +228,7 @@ class BoardActivity: AppCompatActivity() {
                     button.setBackgroundColor(typedValue.data)
                 }
                 button.setColorFilter(ContextCompat.getColor(this@BoardActivity, when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_theme), "AppTheme")) {
-                    getString(R.string.theme_dark) -> android.R.color.white
+                    getString(R.string.theme_value_dark) -> android.R.color.white
                     else -> android.R.color.black
                 }), android.graphics.PorterDuff.Mode.SRC_IN)
 
@@ -352,7 +355,7 @@ class BoardActivity: AppCompatActivity() {
                     getColor(R.color.colorAccentLight) -> android.R.color.black
                     else -> {
                         when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_theme), "AppTheme")) {
-                            getString(R.string.theme_dark) -> android.R.color.white
+                            getString(R.string.theme_value_dark) -> android.R.color.white
                             else -> android.R.color.black
                         }
                     }
@@ -362,7 +365,7 @@ class BoardActivity: AppCompatActivity() {
         for(row in bigButtons) {
             for(button in row) {
                 button.setColorFilter(ContextCompat.getColor(this@BoardActivity, when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_theme), "AppTheme")) {
-                    getString(R.string.theme_dark) -> android.R.color.white
+                    getString(R.string.theme_value_dark) -> android.R.color.white
                     else -> android.R.color.black
                 }), android.graphics.PorterDuff.Mode.SRC_IN)
             }
@@ -399,6 +402,31 @@ class BoardActivity: AppCompatActivity() {
             //Ktoś wygrał
             else -> {
                 textViewActivePlayer.text = resources.getString(R.string.label_winner) + state.whoWon
+            }
+        }
+
+        //Wysyłanie powiadomienia
+        if(state.move == state.you) {
+            val mediaPlayer = MediaPlayer.create(this@BoardActivity, R.raw.anxious)
+            mediaPlayer.setOnCompletionListener {
+                mediaPlayer.release()
+            }
+            val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            val pattern = longArrayOf(0, 100, 1000)
+            when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_notifications), "Sound")) {
+                //Dźwięk i wibracje
+                getString(R.string.notifications_value_all) -> {
+                    mediaPlayer.start()
+                    v.vibrate(pattern, -1)
+                }
+                //Dźwięk
+                getString(R.string.notifications_value_sound) -> {
+                    mediaPlayer.start()
+                }
+                //Wibracje
+                getString(R.string.notifications_value_vibration) -> {
+                    v.vibrate(pattern, -1)
+                }
             }
         }
 

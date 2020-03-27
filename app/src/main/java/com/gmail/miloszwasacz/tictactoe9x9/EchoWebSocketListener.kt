@@ -10,7 +10,7 @@ import okhttp3.WebSocketListener
 class EchoWebSocketListener(private val viewModel: CommunicationViewModel, private val room: String): WebSocketListener() {
     override fun onOpen(webSocket: WebSocket, response: Response) {
         val packet = Gson().toJson(PacketJON(params = ParamsJON(room), time = (System.currentTimeMillis()/1000L).toInt()))
-        webSocket.send(packet)
+        webSocket.send(packet + "\r\n")
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {

@@ -21,13 +21,12 @@ class EchoWebSocketListener(private val viewModel: CommunicationViewModel, priva
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
         webSocket.close(viewModel.NORMAL_CLOSURE_STATUS, null)
-        Log.i("Closing", "$code / $reason")
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
         val task = InterpretationTask(viewModel, null)
         viewModel.interpretationTaskList.add(task)
         task.execute()
-        Log.i("Error", t.message ?: "error")
+        Log.i("Error", t.message ?: "connection error")
     }
 }

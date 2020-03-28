@@ -1,6 +1,5 @@
 package com.gmail.miloszwasacz.tictactoe9x9
 
-import android.app.Application
 import android.os.AsyncTask
 import android.util.Log
 
@@ -24,14 +23,14 @@ class InterpretationTask(private val viewModel: CommunicationViewModel, private 
                     is PacketSTT -> {
                         val result = viewModel.createBoardState(resultPacket)
                         if(result == null) {
-                            viewModel.debugMsg.value = Event(PacketBadErrDbgUin(method = "ERR", params = ParamsBadErrDbgUin(viewModel.getApplication<Application>().getString(R.string.warning_invalid_stt)), time = resultPacket.time))
+                            Log.i("invalidSTT", "Invalid STT packet")
                             viewModel.sendGET()
                         }
                         else {
                             viewModel.connectDialog.value = Event(false)
                             viewModel.currentGameState.value = Event(result)
+                            Log.i("packetSTT", resultPacket.toString())
                         }
-                        Log.i("packetSTT", resultPacket.toString())
                     }
                     //Wysłanie odpowiedzi na pakiet "PNG"
                     is PacketGetPngPog -> {
@@ -41,13 +40,14 @@ class InterpretationTask(private val viewModel: CommunicationViewModel, private 
                     }
                     //Wyświetlanie info o oprogramowaniu
                     is PacketVER -> {
-                        viewModel.versionPacket.value = Event(resultPacket)
                         Log.i("packetVER", resultPacket.toString())
                     }
                     //Zapisywanie błędów itp. w Log'u
                     is PacketBadErrDbgUin -> {
-                        viewModel.debugMsg.value = Event(resultPacket)
-                        Log.i("packetMSG", resultPacket.params.msg)
+                        Log.i("packetMessage", resultPacket.params.msg)
+                        if(resultPacket.method == "ERR") {
+                            viewModel.serverError.value = Event(true)
+                        }
                     }
                 }
             }
@@ -55,9 +55,6 @@ class InterpretationTask(private val viewModel: CommunicationViewModel, private 
             else {
                 viewModel.wrongSocket.value = Event(true)
             }
-        }
-        else {
-            Log.i("state", (resultPacket as PacketBadErrDbgUin).params.msg)
         }
     }
 }

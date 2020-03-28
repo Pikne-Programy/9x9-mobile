@@ -18,34 +18,23 @@
     <!-- Dialogs -->
     <string name="dialog_join_title">Joining Room</string>
     <string name="dialog_join_description">Waiting for an opponent</string>
-    <string name="dialog_version_title">Software information</string>
-    <string name="dialog_version_label_name">name: </string>
-    <string name="dialog_version_label_author">author: </string>
-    <string name="dialog_version_label_version">version: </string>
-    <string name="dialog_version_label_full_name">full name: </string>
-    <string name="dialog_version_label_protocol_version">protocol version: </string>
-    <string name="dialog_version_label_nick">nick: </string>
-    <string name="dialog_version_label_full_nick">full nick: </string>
-    <string name="dialog_debug_title_error">Error</string>
-    <string name="dialog_debug_title_debug">Debug</string>
 
     <!-- Warnings -->
     <string name="warning_invalid_board">Invalid board</string>
     <string name="warning_invalid_stt">Invalid STT Packet</string>
     <string name="warning_connection_error">Connection error</string>
+    <string name="warning_server_error">Server error</string>
 
 
     <!-- Preference Titles -->
     <string name="connection_header">Connection</string>
     <string name="appearance_header">Appearance</string>
-    <string name="developer_header">Developer options</string>
 
     <!-- Preference keys -->
     <string name="key_ip" translatable="false">key_ip</string>
     <string name="key_port" translatable="false">key_port</string>
     <string name="key_theme" translatable="false">key_theme</string>
     <string name="key_notifications" translatable="false">key_notifications</string>
-    <string name="key_debug_info" translatable="false">key_dev</string>
 
     <!-- Connection Preferences -->
     <string name="ip_title">Server address</string>
@@ -54,7 +43,7 @@
     <string name="default_port" translatable="false">4780</string>
 
     <!-- Appearance Preferences -->
-    <string name="theme_title">Theme</string>
+    <string name="theme_title">App Theme</string>
     <string name="theme_name_light">Light</string>
     <string name="theme_name_dark">Dark</string>
     <string name="theme_value_light" translatable="false">AppTheme</string>
@@ -68,9 +57,5 @@
     <string name="notifications_value_sound" translatable="false">Sound</string>
     <string name="notifications_value_vibration" translatable="false">Vibration</string>
     <string name="notifications_value_none" translatable="false">None</string>
-
-    <!-- Developer Preferences -->
-    <string name="debug_info_title">Debug data</string>
-    <string name="debug_info_description">Shows errors and debug data</string>
 
 </resources>

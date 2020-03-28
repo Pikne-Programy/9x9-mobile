@@ -1,7 +1,6 @@
 @file:Suppress("DEPRECATION", "SetTextI18n", "InflateParams")
 package com.gmail.miloszwasacz.tictactoe9x9
 
-import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
@@ -11,11 +10,8 @@ import android.os.Vibrator
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.view.ContextThemeWrapper
@@ -49,16 +45,9 @@ class BoardActivity: AppCompatActivity() {
         val model: CommunicationViewModel by viewModels()
         viewModel = model
 
-        //Obsługa dialogów
+        //Łączenie z serwerem
         model.connectDialog.observe(this@BoardActivity, Observer { event ->
             event?.getContent()?.let {
-                //Łączenie z serwerem
-                for(dialog in model.dialogs) {
-                    if(dialog.isShowing) {
-                        dialog.dismiss()
-                    }
-                    model.dialogs.remove(dialog)
-                }
                 if(it) {
                     val dialog = ProgressDialog(ContextThemeWrapper(this@BoardActivity, theme))
                     dialog.setTitle(R.string.dialog_join_title)
@@ -68,83 +57,10 @@ class BoardActivity: AppCompatActivity() {
                         viewModel.connectDialog.value = Event(false)
                         finish()
                     }
-                    viewModel.dialogs.add(dialog)
                     dialog.show()
                 }
             }
         })
-        model.versionPacket.observe(this@BoardActivity, Observer { event ->
-            event?.getContent()?.let {
-                //Wersja oprogramowania
-                if(model.connectDialog.value?.peekContent() != true) {
-                    for(dialog in model.dialogs) {
-                        if(dialog.isShowing) {
-                            dialog.dismiss()
-                        }
-                        model.dialogs.remove(dialog)
-                    }
-                    if(PreferenceManager.getDefaultSharedPreferences(viewModel.getApplication()).getBoolean(viewModel.getApplication<Application>().getString(R.string.key_debug_info), false)) {
-                        val builder = AlertDialog.Builder(ContextThemeWrapper(this@BoardActivity, theme))
-                        val linearLayout = layoutInflater.inflate(R.layout.dialog_version, null, false) as LinearLayout
-                        val textViewName = linearLayout.findViewById<TextView>(R.id.textViewName)
-                        val textViewAuthor = linearLayout.findViewById<TextView>(R.id.textViewAuthor)
-                        val textViewVersion = linearLayout.findViewById<TextView>(R.id.textViewVersion)
-                        val textViewFullName = linearLayout.findViewById<TextView>(R.id.textViewFullName)
-                        val textViewProtocolVersion = linearLayout.findViewById<TextView>(R.id.textViewProtocolVersion)
-                        val textViewNick = linearLayout.findViewById<TextView>(R.id.textViewNick)
-                        val textViewFullNick = linearLayout.findViewById<TextView>(R.id.textViewFullNick)
-
-                        textViewName.text = textViewName.text.toString() + it.params.name
-                        textViewAuthor.text = textViewAuthor.text.toString() + it.params.author
-                        textViewVersion.text = textViewVersion.text.toString() + it.params.version
-                        textViewFullName.text = textViewFullName.text.toString() + it.params.fullName
-                        textViewProtocolVersion.text = textViewProtocolVersion.text.toString() + it.params.protocolVersion
-                        textViewNick.text = textViewNick.text.toString() + it.params.nick
-                        textViewFullNick.text = textViewFullNick.text.toString() + it.params.fullNick
-
-                        builder
-                            .setTitle(resources.getString(R.string.dialog_version_title))
-                            .setPositiveButton(resources.getString(android.R.string.ok)) {_, _ ->
-                            viewModel.versionPacket.value = null
-                        }
-                            .setView(linearLayout)
-                        val dialog = builder.create()
-                        viewModel.dialogs.add(dialog)
-                        dialog.show()
-                    }
-                }
-            }
-        })
-        model.debugMsg.observe(this@BoardActivity, Observer { event ->
-            event?.getContent()?.let {
-                //Debug i błędy
-                if(model.connectDialog.value?.peekContent() != true) {
-                    for(dialog in model.dialogs) {
-                        if(dialog.isShowing) {
-                            dialog.dismiss()
-                        }
-                        model.dialogs.remove(dialog)
-                    }
-                    if(PreferenceManager.getDefaultSharedPreferences(viewModel.getApplication()).getBoolean(viewModel.getApplication<Application>().getString(R.string.key_debug_info), false)) {
-                        val builder = AlertDialog.Builder(ContextThemeWrapper(this@BoardActivity, theme))
-                        builder
-                            .setTitle(when(it.method) {
-                                             "ERR" -> R.string.dialog_debug_title_error
-                                             else -> R.string.dialog_debug_title_debug
-                                         })
-                            .setMessage(it.params.msg)
-                            .setPositiveButton(resources.getString(android.R.string.ok)) {_, _ ->
-                            viewModel.debugMsg.value = null
-                        }
-                        val dialog = builder.create()
-                        viewModel.dialogs.add(dialog)
-                        dialog.show()
-                    }
-                }
-            }
-        })
-
-        //Łączenie z serwerem
         if(savedInstanceState == null) {
             model.connect(roomName)
         }
@@ -161,6 +77,14 @@ class BoardActivity: AppCompatActivity() {
             event?.getContent()?.let {
                 if(it) {
                     Toast.makeText(this@BoardActivity, R.string.warning_connection_error, Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+        })
+        model.serverError.observe(this@BoardActivity, Observer { event ->
+            event?.getContent()?.let {
+                if(it) {
+                    Toast.makeText(this@BoardActivity, R.string.warning_server_error, Toast.LENGTH_SHORT).show()
                     finish()
                 }
             }
@@ -407,7 +331,7 @@ class BoardActivity: AppCompatActivity() {
 
         //Wysyłanie powiadomienia
         if(state.move == state.you) {
-            val mediaPlayer = MediaPlayer.create(this@BoardActivity, R.raw.anxious)
+            val mediaPlayer = MediaPlayer.create(this@BoardActivity, R.raw.your_move)
             mediaPlayer.setOnCompletionListener {
                 mediaPlayer.release()
             }

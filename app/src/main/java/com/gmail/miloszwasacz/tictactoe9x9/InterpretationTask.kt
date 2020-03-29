@@ -1,7 +1,7 @@
 package com.gmail.miloszwasacz.tictactoe9x9
 
 import android.os.AsyncTask
-import android.util.Log
+import com.google.gson.Gson
 
 class InterpretationTask(private val viewModel: CommunicationViewModel, private val inputPacket: String?): AsyncTask<Void, Void?, Packet?>() {
 
@@ -23,13 +23,13 @@ class InterpretationTask(private val viewModel: CommunicationViewModel, private 
                     is PacketSTT -> {
                         val result = viewModel.createBoardState(resultPacket)
                         if(result == null) {
-                            Log.i("invalidSTT", "Invalid STT packet")
+                            viewModel.writeToLog("Invalid STT packet: ${Gson().toJson(resultPacket)}")
                             viewModel.sendGET()
                         }
                         else {
                             viewModel.connectDialog.value = Event(false)
                             viewModel.currentGameState.value = Event(result)
-                            Log.i("packetSTT", resultPacket.toString())
+                            viewModel.writeToLog(Gson().toJson(resultPacket))
                         }
                     }
                     //Wysłanie odpowiedzi na pakiet "PNG"
@@ -40,11 +40,11 @@ class InterpretationTask(private val viewModel: CommunicationViewModel, private 
                     }
                     //Wyświetlanie info o oprogramowaniu
                     is PacketVER -> {
-                        Log.i("packetVER", resultPacket.toString())
+                        viewModel.writeToLog(Gson().toJson(resultPacket))
                     }
                     //Zapisywanie błędów itp. w Log'u
                     is PacketBadErrDbgUin -> {
-                        Log.i("packetMessage", resultPacket.params.msg)
+                        viewModel.writeToLog(Gson().toJson(resultPacket))
                         if(resultPacket.method == "ERR") {
                             viewModel.serverError.value = Event(true)
                         }

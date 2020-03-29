@@ -16,12 +16,16 @@
         android:scrollHorizontally="false"
         android:singleLine="false"
         android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="34dp"
+        android:hyphenationFrequency="full"
+        android:breakStrategy="simple"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/gridLayoutBoard"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpUsage" />
 
     <androidx.gridlayout.widget.GridLayout
         android:id="@+id/gridLayoutBoard"
@@ -46,11 +50,15 @@
         android:scrollHorizontally="false"
         android:singleLine="false"
         android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="34dp"
+        android:hyphenationFrequency="full"
+        android:breakStrategy="simple"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/gridLayoutBoard"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpUsage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

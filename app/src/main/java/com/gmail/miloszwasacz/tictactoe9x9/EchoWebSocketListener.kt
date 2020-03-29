@@ -1,6 +1,5 @@
 package com.gmail.miloszwasacz.tictactoe9x9
 
-import android.util.Log
 import com.google.gson.Gson
 import okhttp3.Response
 import okhttp3.WebSocket
@@ -27,6 +26,6 @@ class EchoWebSocketListener(private val viewModel: CommunicationViewModel, priva
         val task = InterpretationTask(viewModel, null)
         viewModel.interpretationTaskList.add(task)
         task.execute()
-        Log.i("Error", t.message ?: "connection error")
+        viewModel.writeToLog(t.message ?: "connection error")
     }
 }

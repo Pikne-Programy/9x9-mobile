@@ -2,7 +2,10 @@
 package com.gmail.miloszwasacz.tictactoe9x9
 
 import android.app.Application
+import android.app.Dialog
 import android.os.AsyncTask
+import android.os.Environment
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
@@ -11,6 +14,13 @@ import com.google.gson.reflect.TypeToken
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+
 
 open class CommunicationViewModel(application: Application): AndroidViewModel(application) {
     //IP i port serwera
@@ -22,7 +32,8 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
     private var socket: WebSocket? = null
     val NORMAL_CLOSURE_STATUS = 1000
 
-    //Lista Tasków i Eventy
+    //Listy Tasków i Dialogów oraz Eventy
+    var dialogs = ArrayList<Dialog>()
     val interpretationTaskList = ArrayList<InterpretationTask>()
     var connectDialog = MutableLiveData<Event<Boolean>>()
     var currentGameState = MutableLiveData<Event<BoardModel>>()
@@ -41,19 +52,19 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
     //Wysyłanie ruchu gracza
     fun sendMove(x: Int, y: Int) {
         val packet = PacketSET(params = ParamsSET(x, y), time = (System.currentTimeMillis()/1000L).toInt())
-        socket?.send(Gson().toJson(packet) + "\r\n")
+        socket?.send(Gson().toJson(packet))
     }
 
     //Wysyłanie odpowiedzi na Ping
     fun sendPOG() {
         val packet = PacketGetPngPog(method = "POG", params = ParamsGetPngPog(), time = (System.currentTimeMillis()/1000L).toInt())
-        socket?.send(Gson().toJson(packet) + "\r\n")
+        socket?.send(Gson().toJson(packet))
     }
 
     //Wysłanie prośby o pakiet STT
     fun sendGET() {
         val packet = PacketGetPngPog(method = "GET", params = ParamsGetPngPog(), time = (System.currentTimeMillis()/1000L).toInt())
-        socket?.send(Gson().toJson(packet) + "\r\n")
+        socket?.send(Gson().toJson(packet))
     }
 
     //Zamykanie Socketa
@@ -126,5 +137,26 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
         Integer.parseInt(value)
     } catch (e: NumberFormatException) {
         defaultVal
+    }
+
+    fun writeToLog (data: String) {
+        if (Environment.MEDIA_MOUNTED != Environment.getExternalStorageState()) {
+            return
+        }
+        val file = File(getApplication<Application>().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "log.txt")
+        try {
+            file.createNewFile()
+            val outputStream = FileOutputStream(file, true)
+
+            val sdf = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+            val currentDateAndTime: String = sdf.format(Date())
+
+            outputStream.write(("$currentDateAndTime/: $data\r\n").toByteArray())
+            outputStream.flush()
+            outputStream.close()
+        }
+        catch(e: IOException) {
+            Log.e("Exception", "File write failed: $e")
+        }
     }
 }

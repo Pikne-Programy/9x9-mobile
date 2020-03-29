@@ -48,6 +48,12 @@ class BoardActivity: AppCompatActivity() {
         //Łączenie z serwerem
         model.connectDialog.observe(this@BoardActivity, Observer { event ->
             event?.getContent()?.let {
+                for(dialog in model.dialogs) {
+                    if(dialog.isShowing) {
+                        dialog.dismiss()
+                    }
+                    model.dialogs.remove(dialog)
+                }
                 if(it) {
                     val dialog = ProgressDialog(ContextThemeWrapper(this@BoardActivity, theme))
                     dialog.setTitle(R.string.dialog_join_title)
@@ -57,6 +63,7 @@ class BoardActivity: AppCompatActivity() {
                         viewModel.connectDialog.value = Event(false)
                         finish()
                     }
+                    model.dialogs.add(dialog)
                     dialog.show()
                 }
             }

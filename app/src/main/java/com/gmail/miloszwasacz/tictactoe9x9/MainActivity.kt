@@ -13,10 +13,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        when(PreferenceManager.getDefaultSharedPreferences(this@MainActivity).getString(getString(R.string.key_theme), "AppTheme")) {
-            getString(R.string.theme_value_dark) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -46,6 +42,16 @@ class MainActivity: AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    //Updatowanie Theme'a
+    override fun onResume() {
+        super.onResume()
+        when(PreferenceManager.getDefaultSharedPreferences(this@MainActivity).getString(getString(R.string.key_theme), "AppTheme")) {
+            getString(R.string.theme_value_dark) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+        delegate.applyDayNight()
     }
 }
 

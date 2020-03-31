@@ -1,9 +1,10 @@
 package com.gmail.miloszwasacz.tictactoe9x9
 
+import android.app.Application
 import android.os.AsyncTask
 import com.google.gson.Gson
 
-class InterpretationTask(private val viewModel: CommunicationViewModel, private val inputPacket: String?, val roomName: String): AsyncTask<Void, Void?, Packet?>() {
+class InterpretationTask(private val viewModel: CommunicationViewModel, private val inputPacket: String?): AsyncTask<Void, Void?, Packet?>() {
 
     override fun doInBackground(vararg arg0: Void): Packet? {
         return if(!isCancelled) {
@@ -27,7 +28,7 @@ class InterpretationTask(private val viewModel: CommunicationViewModel, private 
                             viewModel.sendGET()
                         }
                         else {
-                            viewModel.connectDialog.value = Event(false)
+                            viewModel.dialog.value = Event(null)
                             viewModel.currentGameState.value = Event(result)
                             viewModel.writeToLog(Gson().toJson(resultPacket))
                         }
@@ -40,11 +41,18 @@ class InterpretationTask(private val viewModel: CommunicationViewModel, private 
                     }
                     //Wyświetlanie info o oprogramowaniu
                     is PacketVER -> {
+                        viewModel.writeToLog(Gson().toJson(resultPacket))
                         if(!viewModel.timeout) {
                             viewModel.timeout = true
-                            viewModel.sendJON(roomName)
+                            when {
+                                resultPacket.params.protocolVersion > viewModel.getApplication<Application>().getString(R.string.protocol_version) -> viewModel.dialog.value = Event(DialogType.OLD_PROTOCOL)
+                                resultPacket.params.protocolVersion < viewModel.getApplication<Application>().getString(R.string.protocol_version) -> viewModel.dialog.value = Event(DialogType.WRONG_PROTOCOL)
+                                else -> {
+                                    viewModel.dialog.value = Event(null)
+                                    viewModel.sendJON()
+                                }
+                            }
                         }
-                        viewModel.writeToLog(Gson().toJson(resultPacket))
                     }
                     //Zapisywanie błędów itp. w Log'u
                     is PacketBadErrDbgUin -> {

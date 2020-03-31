@@ -1,8 +1,11 @@
 @file:Suppress("DEPRECATION", "SetTextI18n", "InflateParams")
 package com.gmail.miloszwasacz.tictactoe9x9
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -29,10 +32,6 @@ class BoardActivity: AppCompatActivity() {
     private lateinit var viewModel: CommunicationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_theme), "AppTheme")) {
-            getString(R.string.theme_value_dark) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_board)
 
@@ -44,32 +43,82 @@ class BoardActivity: AppCompatActivity() {
         //Ustawianie ViewModelu
         val model: CommunicationViewModel by viewModels()
         viewModel = model
+        model.roomName = roomName
 
-        //Łączenie z serwerem
-        model.connectDialog.observe(this@BoardActivity, Observer { event ->
+        //Dialogi
+        model.dialog.observe(this@BoardActivity, Observer {event ->
+            for(dialog in model.dialogs) {
+                if(dialog.isShowing) {
+                    dialog.dismiss()
+                }
+                model.dialogs.remove(dialog)
+            }
             event?.getContent()?.let {
-                for(dialog in model.dialogs) {
-                    if(dialog.isShowing) {
-                        dialog.dismiss()
+                val dialog: Dialog
+                when(it) {
+                    DialogType.CONNECT -> {
+                        dialog = ProgressDialog(ContextThemeWrapper(this@BoardActivity, theme))
+                        dialog.setTitle(R.string.dialog_connect_title)
+                        dialog.setMessage(resources.getString(R.string.dialog_connect_description))
+                        dialog.setCancelable(true)
+                        dialog.setOnCancelListener {
+                            viewModel.dialog.value = Event(null)
+                            finish()
+                        }
                     }
-                    model.dialogs.remove(dialog)
-                }
-                if(it) {
-                    val dialog = ProgressDialog(ContextThemeWrapper(this@BoardActivity, theme))
-                    dialog.setTitle(R.string.dialog_join_title)
-                    dialog.setMessage(resources.getString(R.string.dialog_join_description))
-                    dialog.setCancelable(true)
-                    dialog.setOnCancelListener {
-                        viewModel.connectDialog.value = Event(false)
-                        finish()
+                    DialogType.JOIN -> {
+                        dialog = ProgressDialog(ContextThemeWrapper(this@BoardActivity, theme))
+                        dialog.setTitle(R.string.dialog_join_title)
+                        dialog.setMessage(resources.getString(R.string.dialog_join_description))
+                        dialog.setCancelable(true)
+                        dialog.setOnCancelListener {
+                            viewModel.dialog.value = Event(null)
+                            finish()
+                        }
                     }
-                    model.dialogs.add(dialog)
-                    dialog.show()
+                    DialogType.WRONG_PROTOCOL -> {
+                        dialog = AlertDialog.Builder(ContextThemeWrapper(this@BoardActivity, theme)).create()
+                        dialog.setTitle(R.string.dialog_wrong_protocol_title)
+                        dialog.setMessage(resources.getString(R.string.dialog_wrong_protocol_description_other))
+                        dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.button_play), DialogInterface.OnClickListener {_, _ ->
+                            model.sendJON()
+                            viewModel.dialog.value = Event(DialogType.JOIN)
+                        })
+                        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(android.R.string.cancel), DialogInterface.OnClickListener {_, _ ->
+                            viewModel.dialog.value = Event(null)
+                            finish()
+                        })
+                        dialog.setOnCancelListener {
+                            viewModel.dialog.value = Event(null)
+                            finish()
+                        }
+                    }
+                    DialogType.OLD_PROTOCOL -> {
+                        dialog = AlertDialog.Builder(ContextThemeWrapper(this@BoardActivity, theme)).create()
+                        dialog.setTitle(R.string.dialog_wrong_protocol_title)
+                        dialog.setMessage(resources.getString(R.string.dialog_wrong_protocol_description_old))
+                        dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.button_play), DialogInterface.OnClickListener {_, _ ->
+                            model.sendJON()
+                            viewModel.dialog.value = Event(DialogType.JOIN)
+                        })
+                        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(android.R.string.cancel), DialogInterface.OnClickListener {_, _ ->
+                            viewModel.dialog.value = Event(null)
+                            finish()
+                        })
+                        dialog.setOnCancelListener {
+                            viewModel.dialog.value = Event(null)
+                            finish()
+                        }
+                    }
                 }
+                model.dialogs.add(dialog)
+                dialog.show()
             }
         })
+
+        //Łączenie z serwerem
         if(savedInstanceState == null) {
-            model.connect(roomName)
+            model.connect()
         }
 
         //Obsługa aktualnego stanu gry
@@ -83,7 +132,7 @@ class BoardActivity: AppCompatActivity() {
         model.wrongSocket.observe(this@BoardActivity, Observer { event ->
             event?.getContent()?.let {
                 if(it) {
-                    Toast.makeText(this@BoardActivity, R.string.warning_connection_error, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@BoardActivity, R.string.warning_connection_error, Toast.LENGTH_LONG).show()
                     finish()
                 }
             }
@@ -91,7 +140,7 @@ class BoardActivity: AppCompatActivity() {
         model.serverError.observe(this@BoardActivity, Observer { event ->
             event?.getContent()?.let {
                 if(it) {
-                    Toast.makeText(this@BoardActivity, R.string.warning_server_error, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@BoardActivity, R.string.warning_server_error, Toast.LENGTH_LONG).show()
                     finish()
                 }
             }
@@ -362,5 +411,15 @@ class BoardActivity: AppCompatActivity() {
         }
 
         gameState = state
+    }
+
+    //Updatowanie Theme'a
+    override fun onResume() {
+        super.onResume()
+        when(PreferenceManager.getDefaultSharedPreferences(this@BoardActivity).getString(getString(R.string.key_theme), "AppTheme")) {
+            getString(R.string.theme_value_dark) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+        delegate.applyDayNight()
     }
 }

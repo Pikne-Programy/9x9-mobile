@@ -11,10 +11,6 @@ import com.takisoft.preferencex.PreferenceFragmentCompat
 class SettingsActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        when(PreferenceManager.getDefaultSharedPreferences(this@SettingsActivity).getString(getString(R.string.key_theme), "AppTheme")) {
-            getString(R.string.theme_value_dark) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)
 
@@ -22,6 +18,16 @@ class SettingsActivity: AppCompatActivity() {
             val fragment = SettingsFragment()
             supportFragmentManager.beginTransaction().replace(R.id.settings, fragment).commit()
         }
+    }
+
+    //Updatowanie Theme'a
+    override fun onResume() {
+        super.onResume()
+        when(PreferenceManager.getDefaultSharedPreferences(this@SettingsActivity).getString(getString(R.string.key_theme), "AppTheme")) {
+            getString(R.string.theme_value_dark) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+        delegate.applyDayNight()
     }
 }
 

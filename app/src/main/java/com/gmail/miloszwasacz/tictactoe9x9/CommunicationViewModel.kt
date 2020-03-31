@@ -32,26 +32,27 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
     private var socket: WebSocket? = null
     val NORMAL_CLOSURE_STATUS = 1000
     var timeout = false
+    var roomName = "public"
 
     //Listy Tasków i Dialogów oraz Eventy
     var dialogs = ArrayList<Dialog>()
     val interpretationTaskList = ArrayList<InterpretationTask>()
-    var connectDialog = MutableLiveData<Event<Boolean>>()
+    var dialog = MutableLiveData<Event<DialogType?>>()
     var currentGameState = MutableLiveData<Event<BoardModel>>()
     var serverError = MutableLiveData<Event<Boolean>>()
     var wrongSocket = MutableLiveData<Event<Boolean>>()
 
     //Łączenie z serwerem
-    fun connect(roomName: String) {
-        connectDialog.value = Event(true)
+    fun connect() {
+        dialog.value = Event(DialogType.CONNECT)
         wrongSocket.value = Event(false)
         val request = Request.Builder().url("ws://$serverIP:$serverPORT").build()
-        val listener = EchoWebSocketListener(this@CommunicationViewModel, roomName)
+        val listener = EchoWebSocketListener(this@CommunicationViewModel)
         socket = client.newWebSocket(request, listener)
     }
 
     //Wysysłanie prośby o dołączenie do pokoju
-    fun sendJON(roomName: String) {
+    fun sendJON() {
         val packet = PacketJON(params = ParamsJON(roomName), time = (System.currentTimeMillis()/1000L).toInt())
         socket?.send(Gson().toJson(packet))
     }
@@ -146,6 +147,7 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
         defaultVal
     }
 
+    //Zapisywanie do Loga
     fun writeToLog (data: String) {
         if (Environment.MEDIA_MOUNTED != Environment.getExternalStorageState()) {
             return

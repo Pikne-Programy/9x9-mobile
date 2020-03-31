@@ -7,7 +7,7 @@
     <string name="button_join_room">Dołącz</string>
     <string name="label_join_room">Dołącz do pokoju</string>
     <string name="dialog_join_title">Dołączanie do pokoju</string>
-    <string name="dialog_join_description">Wyszukiwanie przeciwnika</string>
+    <string name="dialog_join_description">Wyszukiwanie przeciwnika…</string>
     <string name="warning_invalid_board">Błędna plansza</string>
     <string name="label_active_player_you">Twoja tura</string>
     <string name="label_active_player_opponent">Tura przeciwnika</string>
@@ -20,7 +20,7 @@
     <string name="ip_title">Adres serwera</string>
     <string name="port_title">Port serwera</string>
     <string name="theme_title">Motyw aplikacji</string>
-    <string name="warning_connection_error">Błąd połączenia</string>
+    <string name="warning_connection_error">Błąd połączenia. Sprawdź dostęp do internetu</string>
     <string name="label_tie">Remis</string>
     <string name="warning_invalid_stt">Błędny pakiet STT</string>
     <string name="notifications_title">Powiadomienia o turze</string>
@@ -28,5 +28,11 @@
     <string name="notifications_name_all">Dźwięk i wibracje</string>
     <string name="notifications_name_sound">Dźwięk</string>
     <string name="notifications_name_vibration">Wibracje</string>
-    <string name="warning_server_error">Błąd serwera</string>
+    <string name="warning_server_error">Błąd serwera. Proszę spróbować później</string>
+    <string name="dialog_connect_title">Łączenie z serwerem</string>
+    <string name="dialog_connect_description">Proszę czekać…</string>
+    <string name="dialog_wrong_protocol_title">Niespójne wersje</string>
+    <string name="dialog_wrong_protocol_description_old">Lokalna wersja protokołu jest starsza niż ta na serwerze. Odwiedź naszą stronę by pobrać nową wersję. Nadal możesz grać, ale mogą wystąpić błędy. Czy chcesz kontynuować?</string>
+    <string name="dialog_wrong_protocol_description_other">Lokalna wersja protokołu jest niezgodna z tą na serwerze. Odwiedź naszą stronę by pobrać nową wersję. Nadal możesz grać, ale mogą wystąpić błędy. Czy chcesz kontynuować?</string>
+    <string name="button_play">Graj</string>
 </resources>

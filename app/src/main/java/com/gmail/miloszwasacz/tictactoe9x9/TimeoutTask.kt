@@ -4,7 +4,7 @@ import android.os.AsyncTask
 import android.util.Log
 
 
-class TimeoutTask(private val viewModel: CommunicationViewModel, val roomName: String): AsyncTask<Void, Void?, Void?>() {
+class TimeoutTask(private val viewModel: CommunicationViewModel): AsyncTask<Void, Void?, Void?>() {
     override fun doInBackground(vararg params: Void?): Void? {
         try {
             Thread.sleep(10000)
@@ -18,7 +18,7 @@ class TimeoutTask(private val viewModel: CommunicationViewModel, val roomName: S
     override fun onPostExecute(result: Void?) {
         if(!viewModel.timeout) {
             viewModel.timeout = true
-            viewModel.sendJON(roomName)
+            viewModel.sendJON()
         }
     }
 }

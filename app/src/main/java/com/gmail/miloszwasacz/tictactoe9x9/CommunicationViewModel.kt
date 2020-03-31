@@ -31,6 +31,7 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
     private val client = OkHttpClient()
     private var socket: WebSocket? = null
     val NORMAL_CLOSURE_STATUS = 1000
+    var timeout = false
 
     //Listy Tasków i Dialogów oraz Eventy
     var dialogs = ArrayList<Dialog>()
@@ -47,6 +48,12 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
         val request = Request.Builder().url("ws://$serverIP:$serverPORT").build()
         val listener = EchoWebSocketListener(this@CommunicationViewModel, roomName)
         socket = client.newWebSocket(request, listener)
+    }
+
+    //Wysysłanie prośby o dołączenie do pokoju
+    fun sendJON(roomName: String) {
+        val packet = PacketJON(params = ParamsJON(roomName), time = (System.currentTimeMillis()/1000L).toInt())
+        socket?.send(Gson().toJson(packet))
     }
 
     //Wysyłanie ruchu gracza

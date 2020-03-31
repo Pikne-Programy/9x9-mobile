@@ -3,7 +3,7 @@ package com.gmail.miloszwasacz.tictactoe9x9
 import android.os.AsyncTask
 import com.google.gson.Gson
 
-class InterpretationTask(private val viewModel: CommunicationViewModel, private val inputPacket: String?): AsyncTask<Void, Void?, Packet?>() {
+class InterpretationTask(private val viewModel: CommunicationViewModel, private val inputPacket: String?, val roomName: String): AsyncTask<Void, Void?, Packet?>() {
 
     override fun doInBackground(vararg arg0: Void): Packet? {
         return if(!isCancelled) {
@@ -40,6 +40,10 @@ class InterpretationTask(private val viewModel: CommunicationViewModel, private 
                     }
                     //Wyświetlanie info o oprogramowaniu
                     is PacketVER -> {
+                        if(!viewModel.timeout) {
+                            viewModel.timeout = true
+                            viewModel.sendJON(roomName)
+                        }
                         viewModel.writeToLog(Gson().toJson(resultPacket))
                     }
                     //Zapisywanie błędów itp. w Log'u

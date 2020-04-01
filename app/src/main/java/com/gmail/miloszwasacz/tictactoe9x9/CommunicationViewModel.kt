@@ -53,6 +53,7 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
 
     //Wysysłanie prośby o dołączenie do pokoju
     fun sendJON() {
+        dialog.value = Event(DialogType.JOIN)
         val packet = PacketJON(params = ParamsJON(roomName), time = (System.currentTimeMillis()/1000L).toInt())
         socket?.send(Gson().toJson(packet))
     }
@@ -161,7 +162,6 @@ open class CommunicationViewModel(application: Application): AndroidViewModel(ap
             val currentDateAndTime: String = sdf.format(Date())
 
             outputStream.write(("$currentDateAndTime/: $data\r\n").toByteArray())
-            outputStream.flush()
             outputStream.close()
         }
         catch(e: IOException) {

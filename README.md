@@ -10,7 +10,7 @@ Mobile version of Tic Tac Toe 9x9 game.
 - [Contact](#contact)
 
 ## General info
-Tic Tac Toe 9x9 game for Your phone or tablet. Win by acquiring three 3x3 fields horizontally, vertically or diagonally. For full rules click [here](https://pikne-programy.github.io/9x9/rules.html).
+Tic Tac Toe 9x9 game for Your phone or tablet. Win by acquiring three 3x3 fields horizontally, vertically or diagonally. For full rules click [here](https://pikne-programy.github.io/9x9-mobile/).
 
 ## Screenshots
 ![Board Screenshot 1](./screenshots/ss1_tic_tac_toe_9x9.jpg) ![Board Screenshot 2](./screenshots/ss2_tic_tac_toe_9x9.jpg)

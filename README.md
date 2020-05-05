@@ -16,7 +16,7 @@ Tic Tac Toe 9x9 game for Your phone or tablet. Win by acquiring three 3x3 fields
 ![Board Screenshot 1](./screenshots/ss1_tic_tac_toe_9x9.jpg) ![Board Screenshot 2](./screenshots/ss2_tic_tac_toe_9x9.jpg)
 
 ## Setup
-To install this app just go to https://github.com/Pikne-Programy/9x9-mobile/releases, choose the latest version and download the attached apk file. You will probably have to enable "Install Unknown Apps" setting.
+To install this app just go to https://github.com/Pikne-Programy/9x9-mobile/releases, choose the latest version and download the attached apk file. For more detailed instruction go [here](https://pikne-programy.github.io/9x9-mobile/).
 
 ***Disclaimer:***
 Minimal Android version necessary to run this app is Android 6.0 (Marshmallow).
